@@ -1,0 +1,61 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: £gVision V5.31.0.0
+Copyright (C) 2020 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: 123 ECL, CCU, LIC=9WSEV-P429W-VD3KA-1SXVN-93MTN-37MA0
+ 
+Tool Versions:
+Toolchain:       MDK-ARM Plus  Version: 5.31.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARMCM3.DLL V5.31.0.0
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      Segger\JL2CM3.dll V2.99.38.0
+Dialog DLL:      TCM.DLL V1.46.0.0
+ 
+<h2>Project:</h2>
+C:\Users\ECL\Desktop\keil\AmbiqSuite-R2.4.2\boards\apollo3_evb\examples\pdm_fft\keil\pdm_fft.uvprojx
+Project File Date:  09/07/2020
+
+<h2>Output:</h2>
+  
+Warning: *** SUPPORT EXPIRED, NEW PRODUCT SERIAL NUMBER REQUIRED ***
+         *** Running with Code Size Limit: 32K                   ***
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Rebuild target 'pdm_fft'
+compiling startup_keil.s...
+compiling am_util_stdio.c...
+compiling am_util_delay.c...
+compiling am_util_faultisr.c...
+compiling pdm_fft.c...
+../src/pdm_fft.c(395): warning:  #111-D: statement is unreachable
+              pdm_data_get();
+../src/pdm_fft.c: 1 warning, 0 errors
+linking...
+Program Size: Code=11934 RO-data=35958 RW-data=156 ZI-data=88436  
+After Build - User command #1: fromelf --bin --output bin\pdm_fft.bin bin\pdm_fft.axf
+After Build - User command #2: fromelf -cedrst --output bin\pdm_fft.txt bin\pdm_fft.axf
+".\bin\pdm_fft.axf" - 0 Error(s), 2 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: AmbiqMicro
+                http://s3.asia.ambiqmicro.com/pack/AmbiqMicro.Apollo_DFP.1.2.0.pack
+                AmbiqMicro.Apollo_DFP.1.2.0
+                Ambiq Micro Apollo Series Device Support
+
+<h2>Collection of Component include folders:</h2>
+  C:\Users\ECL\AppData\Local\Arm\Packs\AmbiqMicro\Apollo_DFP\1.2.0\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>
