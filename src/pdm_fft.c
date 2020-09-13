@@ -290,8 +290,8 @@ pcm_fft_print(void)
         {
             am_util_stdio_printf("%X ,", pi16PDMData[i]);
 					
-						*(PDM_fft + i) = pi16PDMData[i];
-						am_util_stdio_printf("PDM timedomain [%d] = %X \n", i, *(PDM_fft + i));
+						//*(PDM_fft + i) = pi16PDMData[i];
+						//am_util_stdio_printf("PDM timedomain [%d] = %X \n", i, *(PDM_fft + i));
 
         }
 			g_fPDMTimeDomain[2 * i] = pi16PDMData[i] / 1.0;
