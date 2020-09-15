@@ -98,9 +98,9 @@ am_hal_pdm_config_t g_sPdmConfig =
     .eLeftGain = AM_HAL_PDM_GAIN_0DB,
     .eRightGain = AM_HAL_PDM_GAIN_0DB,
     .ui32DecimationRate = 64,
-    .bHighPassEnable = 0,
+    .bHighPassEnable = 0,                           
     .ui32HighPassCutoff = 0xB,
-    .ePDMClkSpeed = AM_HAL_PDM_CLK_6MHZ,
+    .ePDMClkSpeed = AM_HAL_PDM_CLK_1_5MHZ,
     .bInvertI2SBCLK = 0,
     .ePDMClkSource = AM_HAL_PDM_INTERNAL_CLK,
     .bPDMSampleDelay = 0,
@@ -290,8 +290,8 @@ pcm_fft_print(void)
         {
             am_util_stdio_printf("%X ,", pi16PDMData[i]);
 					
-						//*(PDM_fft + i) = pi16PDMData[i];
-						//am_util_stdio_printf("PDM timedomain [%d] = %X \n", i, *(PDM_fft + i));
+						*(PDM_fft + i) = pi16PDMData[i];
+						am_util_stdio_printf("PDM input [%d] = %X \n", i, *(PDM_fft + i));
 
         }
 			g_fPDMTimeDomain[2 * i] = pi16PDMData[i] / 1.0;
@@ -322,7 +322,7 @@ pcm_fft_print(void)
 
 
 		/* Low-Pass Filter Signal To Obtain PCM signal */
-		for(uint32_t i=1;i<PDM_FFT_SIZE;i++)
+		/*for(uint32_t i=1;i<PDM_FFT_SIZE;i++)
 		{
 			 pcmSignal[i]=0;
 			 for(uint32_t j=0;j<10;j++)
@@ -346,7 +346,7 @@ pcm_fft_print(void)
 
 			}
 		}
-
+*/
 
     if (PRINT_PDM_DATA)
     {
