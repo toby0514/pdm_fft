@@ -157,7 +157,11 @@
       <MemoryWindow1>
         <Mm>
           <WinNumber>1</WinNumber>
+<<<<<<< HEAD
           <SubType>0</SubType>
+=======
+          <SubType>1</SubType>
+>>>>>>> master
           <ItemText>0x10040000</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>

@@ -31,8 +31,13 @@
     Program header entries: 1
     Section header entries: 18
 
+<<<<<<< HEAD
     Program header offset: 642432 (0x0009cd80)
     Section header offset: 642464 (0x0009cda0)
+=======
+    Program header offset: 641724 (0x0009cabc)
+    Section header offset: 641756 (0x0009cadc)
+>>>>>>> master
 
     Section header string table index: 17
 
@@ -13466,7 +13471,7 @@
 
     0x10000000:   00 00 00 00 00 00 04 10 00 00 00 00 00 00 00 00    ................
     0x10000010:   00 04 04 00 40 00 00 00 00 00 00 00 0b 00 00 00    ....@...........
-    0x10000020:   02 00 00 00 01 02 00 00 01 00 00 00 00 00 00 00    ................
+    0x10000020:   04 00 00 00 01 02 00 00 01 00 00 00 00 00 00 00    ................
     0x10000030:   00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00    ................
     0x10000040:   00 00 00 00 0a 00 00 00 03 00 00 00 1e 00 00 00    ................
     0x10000050:   03 00 00 00 0f 00 00 00 03 00 00 00 0e 00 00 00    ................
@@ -13490,7 +13495,11 @@
 
 
 ** Section #6 '.debug_info' (SHT_PROGBITS)
+<<<<<<< HEAD
     Size   : 297358 bytes
+=======
+    Size   : 296654 bytes
+>>>>>>> master
 
 
 ** Section #7 '.debug_line' (SHT_PROGBITS)
