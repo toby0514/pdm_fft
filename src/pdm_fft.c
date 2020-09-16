@@ -54,10 +54,16 @@
 
 #define ARM_MATH_CM4
 #include <arm_math.h>
-
 #include "am_mcu_apollo.h"
 #include "am_bsp.h"
 #include "am_util.h"
+#include <stdio.h>
+#include <string.h>
+/*#include <errno.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <OpenPDMFilter.h>*/
+
 //*****************************************************************************
 //
 // Example parameters.
@@ -65,8 +71,8 @@
 //*****************************************************************************
 #define PDM_FFT_SIZE                4096
 #define PDM_FFT_BYTES               (PDM_FFT_SIZE * 2)
-#define PRINT_PDM_DATA              1
-#define PRINT_FFT_DATA              0
+#define PRINT_PDM_DATA              0
+#define PRINT_FFT_DATA              0 
 
 //*****************************************************************************
 //
@@ -78,12 +84,8 @@ uint32_t g_ui32PDMDataBuffer[PDM_FFT_SIZE];
 float g_fPDMTimeDomain[PDM_FFT_SIZE * 2];
 float g_fPDMFrequencyDomain[PDM_FFT_SIZE * 2];
 float g_fPDMMagnitudes[PDM_FFT_SIZE * 2];
-volatile unsigned int *PDM_fft = (volatile unsigned int *)0x10040000;
-// float g_fPDMMagnitudes[PDM_FFT_SIZE * 2];
+volatile float *Data = (volatile float *)0x10004000;
 uint32_t g_ui32SampleFreq;
-int16_t pcmSignal[PDM_FFT_SIZE];
-int16_t buffer[PDM_FFT_SIZE];
-int16_t tmp;
 
 //*****************************************************************************
 //
@@ -100,7 +102,7 @@ am_hal_pdm_config_t g_sPdmConfig =
     .ui32DecimationRate = 64,
     .bHighPassEnable = 0,
     .ui32HighPassCutoff = 0xB,
-    .ePDMClkSpeed = AM_HAL_PDM_CLK_6MHZ,
+    .ePDMClkSpeed = AM_HAL_PDM_CLK_1_5MHZ,
     .bInvertI2SBCLK = 0,
     .ePDMClkSource = AM_HAL_PDM_INTERNAL_CLK,
     .bPDMSampleDelay = 0,
@@ -225,6 +227,7 @@ pdm_data_get(void)
     //
     am_hal_pdm_transfer_t sTransfer;
     sTransfer.ui32TargetAddr = (uint32_t ) g_ui32PDMDataBuffer;
+		//am_util_stdio_printf("%d",g_ui32PDMDataBuffer);
     sTransfer.ui32TotalCount = PDM_FFT_BYTES;
 
     //
@@ -277,82 +280,69 @@ pcm_fft_print(void)
 {
     float fMaxValue;
     uint32_t ui32MaxIndex;
-    int16_t *pi16PDMData = (int16_t *) g_ui32PDMDataBuffer;
+    uint16_t *pi16PDMData = (uint16_t *) g_ui32PDMDataBuffer;
     uint32_t ui32LoudestFrequency;
 	
     //
     // Convert the PDM samples to floats, and arrange them in the format
     // required by the FFT function.
     //
-    for (uint32_t i = 0; i < PDM_FFT_SIZE; i++)
+    for (uint16_t i = 0; i < PDM_FFT_SIZE; i++)
     {
-        if (PRINT_PDM_DATA)
-        {
-            am_util_stdio_printf("%X ,", pi16PDMData[i]);
+				int hexValue[4];
+				int binValue[16];
+				int hexRound = 0;
+				int roundCount = 0,roundCount2 = 0;
 					
-						//*(PDM_fft + i) = pi16PDMData[i];
-						//am_util_stdio_printf("PDM timedomain [%d] = %X \n", i, *(PDM_fft + i));
-
-        }
-			g_fPDMTimeDomain[2 * i] = pi16PDMData[i] / 1.0;
-			g_fPDMTimeDomain[2 * i + 1] = 0.0;
+				//
+				//Dec2Hex
+				for(int k = 0; k < 4; k++)
+				{
+					hexValue[hexRound] = pi16PDMData[i] % 16;
+					pi16PDMData[i] = pi16PDMData[i] / 16;
+					hexRound++;
+					roundCount++;
+				}
+			//	am_util_stdio_printf("\nHex: ");
+				while(hexRound != 0)
+				{
+					hexRound--;
+				//	am_util_stdio_printf("%d",hexValue[hexRound]);
+				}
+				//Hex2Bin
+				for(int j = 0; j < roundCount; j++)
+				{
+					for(int k = 0; k <= 4; k++)
+					{
+						binValue[j*4 + k] = hexValue[j] % 2;
+						hexValue[j] = hexValue[j] / 2;
+						roundCount2++;
+					}
+				}
+				//am_util_stdio_printf("\nBin: ");
+				while(roundCount2 != 0)
+				{
+					roundCount2--;
+					am_util_stdio_printf("%d\n",binValue[roundCount2]);
+				}
+				
+				
+				*(Data + i) = pi16PDMData[i];
+				
+				//print_PDM_data,PCM_data
+        if (PRINT_PDM_DATA)
+        {		
+            am_util_stdio_printf("%d ", pi16PDMData[i]);
+        }	
+        g_fPDMTimeDomain[2 * i] = pi16PDMData[i] / 1.0;
+        g_fPDMTimeDomain[2 * i + 1] = 0.0;
     }
 		
-		/*for (uint32_t i = 0; i < PDM_FFT_SIZE*2; i++)
-    {
-        if (PRINT_PDM_DATA)
-        {
-						*(PDM_fft + i) = pi16PDMData[i];
-					
-						am_util_stdio_printf("PDM timedomain [%d] = %X \n", i, *(PDM_fft + i));
-        }
-    }*/
-		
-		/* Buffer PDM signal for further processing and decimation */
-		/*for (uint32_t i=0;i<PDM_FFT_SIZE;i++)
-		{
-			 tmp=0;
-			 for(uint32_t j=0;j<16;j++)
-			 { // Decimation factor 16
-					tmp+=((pi16PDMData[i+j]>>2)&1);
-			 }
-			 
-			 buffer[i]=tmp;
-		}*/
-
-
-		/* Low-Pass Filter Signal To Obtain PCM signal */
-		for(uint32_t i=1;i<PDM_FFT_SIZE;i++)
-		{
-			 pcmSignal[i]=0;
-			 for(uint32_t j=0;j<10;j++)
-			 {
-					pcmSignal[i]+=pi16PDMData[i+j];
-			 }
-		}
-
-		for(uint32_t i=1;i<PDM_FFT_SIZE;i++)
-		{
-			 for(uint32_t j=0;j<15;j++)
-			 {
-					pcmSignal[i]+=buffer[i+j];
-			 }
-			 if (PRINT_PDM_DATA)
-			{
-					//am_util_stdio_printf("%X ,", *pcmSignal[i]);
-					*(PDM_fft + i) = pcmSignal[i];
-				
-					am_util_stdio_printf("PDM input [%d] = %X \n", i, *(PDM_fft + i));
-
-			}
-		}
-
-
     if (PRINT_PDM_DATA)
     {
         am_util_stdio_printf("END\n");
     }
-		
+
     //
     // Perform the FFT.
     //
@@ -365,10 +355,7 @@ pcm_fft_print(void)
     {
         for (uint32_t i = 0; i < PDM_FFT_SIZE / 2; i++)
         {
-            am_util_stdio_printf("%X ", g_fPDMMagnitudes[i]);
-						//*(float*)(PDM_fft + i) = g_fPDMMagnitudes[i];
-					
-						//am_util_stdio_printf("FFT input[%d] = %X\n", i, *(PDM_fft + i));
+            am_util_stdio_printf("%f\n", g_fPDMMagnitudes[i]);
         }
 
         am_util_stdio_printf("END\n");
@@ -383,10 +370,10 @@ pcm_fft_print(void)
 
     if (PRINT_FFT_DATA)
     {
-        am_util_stdio_printf("Loudest frequency bin: %d\n", ui32MaxIndex);
+				am_util_stdio_printf("Loudest frequency bin: %d\n", ui32MaxIndex);
     }
 //    am_util_stdio_printf("Loudest frequency: %d         \r", ui32LoudestFrequency);
-    am_util_stdio_printf("Loudest frequency: %d\n", ui32LoudestFrequency);
+		am_util_stdio_printf("Loudest frequency: %d\n", ui32LoudestFrequency);
 }
 
 //*****************************************************************************
@@ -397,6 +384,12 @@ pcm_fft_print(void)
 int
 main(void)
 {
+/*		int opt, ret, dataCount;
+		int finished = 0;
+		unsigned int pdmSamplingF, decimationF, pcmSamplingF, pdmBufLen, pcmBufLen;
+		uint8_t* pdmBuf;
+		int16_t* pcmBuf;*/
+	
     //
     // Perform the standard initialzation for clocks, cache settings, and
     // board-level low-power operation.
@@ -444,7 +437,7 @@ main(void)
             //
             // Start converting the next set of PCM samples.
             //
-            //pdm_data_get();
+            pdm_data_get();
         }
 
         //
