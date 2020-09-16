@@ -69,10 +69,14 @@
 // Example parameters.
 //
 //*****************************************************************************
-#define PDM_FFT_SIZE                4096
+#define PDM_FFT_SIZE                AUDIO_FRAME_SIZE_MONO_BYTES/4
 #define PDM_FFT_BYTES               (PDM_FFT_SIZE * 2)
-#define PRINT_PDM_DATA              0
+#define PRINT_PDM_DATA              1
 #define PRINT_FFT_DATA              0 
+#define AUDIO_FRAME_MS 							1000
+#define g_ui32SampleFreq        ((16000)/(1000/AUDIO_FRAME_MS))
+#define AUDIO_FRAME_SIZE_MONO_BYTES     (g_ui32SampleFreq*2)
+#define AUDIO_FRAME_SIZE_STEREO_BYTES   (g_ui32SampleFreq*4)
 
 //*****************************************************************************
 //
@@ -80,12 +84,12 @@
 //
 //*****************************************************************************
 volatile bool g_bPDMDataReady = false;
-uint32_t g_ui32PDMDataBuffer[PDM_FFT_SIZE];
-float g_fPDMTimeDomain[PDM_FFT_SIZE * 2];
-float g_fPDMFrequencyDomain[PDM_FFT_SIZE * 2];
-float g_fPDMMagnitudes[PDM_FFT_SIZE * 2];
+uint32_t g_ui32PDMDataBuffer[AUDIO_FRAME_SIZE_MONO_BYTES/4];
+float g_fPDMTimeDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
+float g_fPDMFrequencyDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
+float g_fPDMMagnitudes[AUDIO_FRAME_SIZE_MONO_BYTES/2];
 volatile float *Data = (volatile float *)0x10004000;
-uint32_t g_ui32SampleFreq;
+//uint32_t g_ui32SampleFreq;
 
 //*****************************************************************************
 //
@@ -165,14 +169,14 @@ void
 pdm_config_print(void)
 {
     uint32_t ui32PDMClk;
-    uint32_t ui32MClkDiv;
+    //uint32_t ui32MClkDiv;
     float fFrequencyUnits;
 
     //
     // Read the config structure to figure out what our internal clock is set
     // to.
     //
-    switch (g_sPdmConfig.eClkDivider)
+  /*  switch (g_sPdmConfig.eClkDivider)
     {
         case AM_HAL_PDM_MCLKDIV_4: ui32MClkDiv = 4; break;
         case AM_HAL_PDM_MCLKDIV_3: ui32MClkDiv = 3; break;
@@ -181,7 +185,7 @@ pdm_config_print(void)
 
         default:
             ui32MClkDiv = 0;
-    }
+    }*/
 
     switch (g_sPdmConfig.ePDMClkSpeed)
     {
@@ -201,8 +205,8 @@ pdm_config_print(void)
     // Record the effective sample frequency. We'll need it later to print the
     // loudest frequency from the sample.
     //
-    g_ui32SampleFreq = (ui32PDMClk /
-                        (ui32MClkDiv * 2 * g_sPdmConfig.ui32DecimationRate));
+    //g_ui32SampleFreq = (ui32PDMClk /(ui32MClkDiv * 2 * g_sPdmConfig.ui32DecimationRate));
+		//g_ui32SampleFreq   = (uint32_t)((16000)/(1000/AUDIO_FRAME_MS));
 
     fFrequencyUnits = (float) g_ui32SampleFreq / (float) PDM_FFT_SIZE;
 
@@ -287,15 +291,17 @@ pcm_fft_print(void)
     // Convert the PDM samples to floats, and arrange them in the format
     // required by the FFT function.
     //
-    for (uint16_t i = 0; i < PDM_FFT_SIZE; i++)
+    for (uint16_t i = 0; i < AUDIO_FRAME_SIZE_MONO_BYTES/4; i++)
     {
 				int hexValue[4];
 				int binValue[16];
 				int hexRound = 0;
 				int roundCount = 0,roundCount2 = 0;
-					
+				//am_util_stdio_printf(" integer:%d",pi16PDMData[i]);
 				//
 				//Dec2Hex
+			  am_util_stdio_printf(" integer:%d",pi16PDMData[i]);
+			
 				for(int k = 0; k < 4; k++)
 				{
 					hexValue[hexRound] = pi16PDMData[i] % 16;
@@ -319,23 +325,24 @@ pcm_fft_print(void)
 						roundCount2++;
 					}
 				}
-				//am_util_stdio_printf("\nBin: ");
+				am_util_stdio_printf("\nBin: ");
 				while(roundCount2 != 0)
 				{
 					roundCount2--;
-					am_util_stdio_printf("%d\n",binValue[roundCount2]);
+					am_util_stdio_printf("%d",binValue[roundCount2]);
 				}
 				
 				
+
 				*(Data + i) = pi16PDMData[i];
-				
+
 				//print_PDM_data,PCM_data
         if (PRINT_PDM_DATA)
         {		
-            am_util_stdio_printf("%d ", pi16PDMData[i]);
+            //am_util_stdio_printf("%d ", pi16PDMData[i]);
         }	
-        g_fPDMTimeDomain[2 * i] = pi16PDMData[i] / 1.0;
-        g_fPDMTimeDomain[2 * i + 1] = 0.0;
+       /* g_fPDMTimeDomain[2 * i] = pi16PDMData[i] / 1.0;
+        g_fPDMTimeDomain[2 * i + 1] = 0.0;*/
     }
 		
     if (PRINT_PDM_DATA)
@@ -346,7 +353,7 @@ pcm_fft_print(void)
     //
     // Perform the FFT.
     //
-    arm_cfft_radix4_instance_f32 S;
+    /*arm_cfft_radix4_instance_f32 S;
     arm_cfft_radix4_init_f32(&S, PDM_FFT_SIZE, 0, 1);
     arm_cfft_radix4_f32(&S, g_fPDMTimeDomain);
     arm_cmplx_mag_f32(g_fPDMTimeDomain, g_fPDMMagnitudes, PDM_FFT_SIZE);
@@ -373,7 +380,7 @@ pcm_fft_print(void)
 				am_util_stdio_printf("Loudest frequency bin: %d\n", ui32MaxIndex);
     }
 //    am_util_stdio_printf("Loudest frequency: %d         \r", ui32LoudestFrequency);
-		am_util_stdio_printf("Loudest frequency: %d\n", ui32LoudestFrequency);
+		am_util_stdio_printf("Loudest frequency: %d\n", ui32LoudestFrequency);*/
 }
 
 //*****************************************************************************
@@ -437,7 +444,7 @@ main(void)
             //
             // Start converting the next set of PCM samples.
             //
-            pdm_data_get();
+            //pdm_data_get();
         }
 
         //

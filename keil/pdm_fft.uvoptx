@@ -157,11 +157,7 @@
       <MemoryWindow1>
         <Mm>
           <WinNumber>1</WinNumber>
-<<<<<<< HEAD
-          <SubType>0</SubType>
-=======
           <SubType>1</SubType>
->>>>>>> master
           <ItemText>0x10040000</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
@@ -188,7 +184,7 @@
         <eProf>0</eProf>
         <aLa>0</aLa>
         <aPa1>0</aPa1>
-        <AscS4>1</AscS4>
+        <AscS4>0</AscS4>
         <aSer4>1</aSer4>
         <StkLoc>0</StkLoc>
         <TrcWin>0</TrcWin>

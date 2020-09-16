@@ -69,3 +69,4 @@
 .\bin\pdm_fft.o: ../../../../../utils/am_util_string.h
 .\bin\pdm_fft.o: ../../../../../utils/am_util_time.h
 .\bin\pdm_fft.o: ../../../../../utils/am_util_ble.h
+.\bin\pdm_fft.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
