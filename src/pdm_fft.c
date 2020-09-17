@@ -88,7 +88,7 @@ uint32_t g_ui32PDMDataBuffer[AUDIO_FRAME_SIZE_MONO_BYTES/4];
 float g_fPDMTimeDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
 float g_fPDMFrequencyDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
 float g_fPDMMagnitudes[AUDIO_FRAME_SIZE_MONO_BYTES/2];
-volatile float *Data = (volatile float *)0x10004000;
+volatile float *Data = (volatile float *)0x10040000;
 //uint32_t g_ui32SampleFreq;
 
 //*****************************************************************************
@@ -111,7 +111,7 @@ am_hal_pdm_config_t g_sPdmConfig =
     .ePDMClkSource = AM_HAL_PDM_INTERNAL_CLK,
     .bPDMSampleDelay = 0,
     .bDataPacking = 1,
-    .ePCMChannels = AM_HAL_PDM_CHAN  EL_RIGHT,
+    .ePCMChannels = AM_HAL_PDM_CHANNEL_RIGHT,
     .ui32GainChangeDelay = 1,
     .bI2SEnable = 0, 
     .bSoftMute = 0,
@@ -282,10 +282,10 @@ am_pdm0_isr(void)
 void
 pcm_fft_print(void)
 {
-    float fMaxValue;
-    uint32_t ui32MaxIndex;
+   // float fMaxValue;
+   // uint32_t ui32MaxIndex;
     uint16_t *pi16PDMData = (uint16_t *) g_ui32PDMDataBuffer;
-    uint32_t ui32LoudestFrequency;
+   // uint32_t ui32LoudestFrequency;
 	
     //
     // Convert the PDM samples to floats, and arrange them in the format

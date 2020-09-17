@@ -29,23 +29,20 @@ Project File Date:  09/17/2020
 Warning: *** SUPPORT EXPIRED, NEW PRODUCT SERIAL NUMBER REQUIRED ***
          *** Running with Code Size Limit: 32K                   ***
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
-Build target 'pdm_fft'
+Rebuild target 'pdm_fft'
 compiling startup_keil.s...
+compiling am_util_stdio.c...
+compiling am_util_delay.c...
+compiling am_util_faultisr.c...
 compiling pdm_fft.c...
-../src/pdm_fft.c(285): warning:  #177-D: variable "fMaxValue"  was declared but never referenced
-      float fMaxValue;
-../src/pdm_fft.c(286): warning:  #177-D: variable "ui32MaxIndex"  was declared but never referenced
-      uint32_t ui32MaxIndex;
 ../src/pdm_fft.c(287): warning:  #177-D: variable "pi16PDMData"  was declared but never referenced
       uint16_t *pi16PDMData = (uint16_t *) g_ui32PDMDataBuffer;
-../src/pdm_fft.c(288): warning:  #177-D: variable "ui32LoudestFrequency"  was declared but never referenced
-      uint32_t ui32LoudestFrequency;
-../src/pdm_fft.c: 4 warnings, 0 errors
+../src/pdm_fft.c: 1 warning, 0 errors
 linking...
 Program Size: Code=8534 RO-data=1142 RW-data=148 ZI-data=38516  
 After Build - User command #1: fromelf --bin --output bin\pdm_fft.bin bin\pdm_fft.axf
 After Build - User command #2: fromelf -cedrst --output bin\pdm_fft.txt bin\pdm_fft.axf
-".\bin\pdm_fft.axf" - 0 Error(s), 5 Warning(s).
+".\bin\pdm_fft.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -58,7 +55,7 @@ Package Vendor: AmbiqMicro
   C:\Users\Baicala\AppData\Local\Arm\Packs\AmbiqMicro\Apollo_DFP\1.2.0\Device\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>
