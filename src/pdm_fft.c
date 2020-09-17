@@ -101,8 +101,8 @@ void *PDMHandle;
 am_hal_pdm_config_t g_sPdmConfig =
 {
     .eClkDivider = AM_HAL_PDM_MCLKDIV_1,
-    .eLeftGain = AM_HAL_PDM_GAIN_0DB,
-    .eRightGain = AM_HAL_PDM_GAIN_0DB,
+    .eLeftGain = AM_HAL_PDM_GAIN_P105DB,
+    .eRightGain = AM_HAL_PDM_GAIN_P105DB,
     .ui32DecimationRate = 64,
     .bHighPassEnable = 0,                           
     .ui32HighPassCutoff = 0xB,
@@ -111,7 +111,7 @@ am_hal_pdm_config_t g_sPdmConfig =
     .ePDMClkSource = AM_HAL_PDM_INTERNAL_CLK,
     .bPDMSampleDelay = 0,
     .bDataPacking = 1,
-    .ePCMChannels = AM_HAL_PDM_CHANNEL_RIGHT,
+    .ePCMChannels = AM_HAL_PDM_CHAN  EL_RIGHT,
     .ui32GainChangeDelay = 1,
     .bI2SEnable = 0, 
     .bSoftMute = 0,
@@ -232,7 +232,7 @@ pdm_data_get(void)
     am_hal_pdm_transfer_t sTransfer;
     sTransfer.ui32TargetAddr = (uint32_t ) g_ui32PDMDataBuffer;
 		//am_util_stdio_printf("%d",g_ui32PDMDataBuffer);
-    sTransfer.ui32TotalCount = PDM_FFT_BYTES;
+    sTransfer.ui32TotalCount = PDM_FFT_BYTES*2;
 
     //
     // Start the data transfer.
@@ -293,6 +293,7 @@ pcm_fft_print(void)
     //
     for (uint16_t i = 0; i < AUDIO_FRAME_SIZE_MONO_BYTES/4; i++)
     {
+			/*
 				int hexValue[4];
 				int binValue[16];
 				int hexRound = 0;
@@ -300,7 +301,7 @@ pcm_fft_print(void)
 				//am_util_stdio_printf(" integer:%d",pi16PDMData[i]);
 				//
 				//Dec2Hex
-			  //am_util_stdio_printf(" integer:%d",pi16PDMData[i]);
+			  am_util_stdio_printf(" integer:%d\n\r",(int16_t)pi16PDMData[i]);
 			
 				for(int k = 0; k < 4; k++)
 				{
@@ -329,12 +330,12 @@ pcm_fft_print(void)
 				while(roundCount2 != 0)
 				{
 					roundCount2--;
-					am_util_stdio_printf("%d,",binValue[roundCount2]);
+					//am_util_stdio_printf("%d,",binValue[roundCount2]);
 				}
-				
+				*/
 				
 
-				*(Data + i) = pi16PDMData[i];
+				//*(Data + i) = pi16PDMData[i];
 
 				//print_PDM_data,PCM_data
         if (PRINT_PDM_DATA)

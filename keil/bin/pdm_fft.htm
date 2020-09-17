@@ -3,11 +3,11 @@
 <title>Static Call Graph - [.\bin\pdm_fft.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\bin\pdm_fft.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Sep 17 13:41:46 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Sep 17 19:35:09 2020
 <BR><P>
-<H3>Maximum Stack Usage =        248 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        240 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-__rt_entry_main &rArr; main &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; uint64_to_str
+HardFault_Handler &rArr; am_util_faultisr_collect_data &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; uint64_to_str
 <P>
 <H3>
 Mutually Recursive functions
@@ -353,7 +353,7 @@ Global Symbols
 <P><STRONG><a name="[8e]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[3b]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 248 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 176 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; uint64_to_str
 </UL>
 <BR>[Calls]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -472,8 +472,8 @@ Global Symbols
 <P><STRONG><a name="[4b]"></a>am_hal_cachectrl_config</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, am_hal_cachectrl.o(i.am_hal_cachectrl_config))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = am_hal_cachectrl_config
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
-<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -508,8 +508,8 @@ Global Symbols
 <P><STRONG><a name="[49]"></a>am_hal_gpio_pinconfig</STRONG> (Thumb, 586 bytes, Stack size 80 bytes, am_hal_gpio.o(i.am_hal_gpio_pinconfig))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = am_hal_gpio_pinconfig
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
-<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
 </UL>
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_bsp_itm_printf_enable
 <LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -518,8 +518,8 @@ Global Symbols
 <P><STRONG><a name="[50]"></a>am_hal_gpio_state_write</STRONG> (Thumb, 128 bytes, Stack size 24 bytes, am_hal_gpio.o(i.am_hal_gpio_state_write))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = am_hal_gpio_state_write
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
-<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -579,10 +579,10 @@ Global Symbols
 <P><STRONG><a name="[53]"></a>am_hal_pdm_power_control</STRONG> (Thumb, 120 bytes, Stack size 16 bytes, am_hal_pdm.o(i.am_hal_pdm_power_control))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = am_hal_pdm_power_control &rArr; am_hal_pwrctrl_periph_enable
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
 <LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_pwrctrl_periph_enable
 <LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_pwrctrl_periph_disable
-<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -590,9 +590,9 @@ Global Symbols
 <P><STRONG><a name="[54]"></a>am_hal_pwrctrl_periph_disable</STRONG> (Thumb, 70 bytes, Stack size 24 bytes, am_hal_pwrctrl.o(i.am_hal_pwrctrl_periph_disable))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = am_hal_pwrctrl_periph_disable
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_flash_delay
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_flash_delay
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
-<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
 </UL>
 <BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_pdm_power_control
 </UL>
@@ -600,9 +600,9 @@ Global Symbols
 <P><STRONG><a name="[55]"></a>am_hal_pwrctrl_periph_enable</STRONG> (Thumb, 72 bytes, Stack size 24 bytes, am_hal_pwrctrl.o(i.am_hal_pwrctrl_periph_enable))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = am_hal_pwrctrl_periph_enable
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_flash_delay
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_flash_delay
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
-<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
 </UL>
 <BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_pdm_power_control
 </UL>
@@ -610,8 +610,8 @@ Global Symbols
 <P><STRONG><a name="[56]"></a>am_hal_sysctrl_sleep</STRONG> (Thumb, 82 bytes, Stack size 16 bytes, am_hal_sysctrl.o(i.am_hal_sysctrl_sleep))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = am_hal_sysctrl_sleep
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
-<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
+<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -687,8 +687,8 @@ Global Symbols
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
 </UL>
 
-<P><STRONG><a name="[3c]"></a>main</STRONG> (Thumb, 564 bytes, Stack size 80 bytes, pdm_fft.o(i.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 248<LI>Call Chain = main &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; uint64_to_str
+<P><STRONG><a name="[3c]"></a>main</STRONG> (Thumb, 318 bytes, Stack size 8 bytes, pdm_fft.o(i.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 176<LI>Call Chain = main &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; uint64_to_str
 </UL>
 <BR>[Calls]<UL><LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_terminal_clear
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
@@ -713,7 +713,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
 </UL>
 
-<P><STRONG><a name="[6a]"></a>pcm_fft_print</STRONG> (Thumb, 254 bytes, Stack size 112 bytes, pdm_fft.o(i.pcm_fft_print), UNUSED)
+<P><STRONG><a name="[6a]"></a>pcm_fft_print</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, pdm_fft.o(i.pcm_fft_print), UNUSED)
 <BR><BR>[Calls]<UL><LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
 </UL>
 

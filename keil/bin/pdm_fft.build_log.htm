@@ -36,14 +36,16 @@ compiling pdm_fft.c...
       float fMaxValue;
 ../src/pdm_fft.c(286): warning:  #177-D: variable "ui32MaxIndex"  was declared but never referenced
       uint32_t ui32MaxIndex;
+../src/pdm_fft.c(287): warning:  #177-D: variable "pi16PDMData"  was declared but never referenced
+      uint16_t *pi16PDMData = (uint16_t *) g_ui32PDMDataBuffer;
 ../src/pdm_fft.c(288): warning:  #177-D: variable "ui32LoudestFrequency"  was declared but never referenced
       uint32_t ui32LoudestFrequency;
-../src/pdm_fft.c: 3 warnings, 0 errors
+../src/pdm_fft.c: 4 warnings, 0 errors
 linking...
-Program Size: Code=9038 RO-data=1142 RW-data=152 ZI-data=38512  
+Program Size: Code=8534 RO-data=1142 RW-data=148 ZI-data=38516  
 After Build - User command #1: fromelf --bin --output bin\pdm_fft.bin bin\pdm_fft.axf
 After Build - User command #2: fromelf -cedrst --output bin\pdm_fft.txt bin\pdm_fft.axf
-".\bin\pdm_fft.axf" - 0 Error(s), 4 Warning(s).
+".\bin\pdm_fft.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 
