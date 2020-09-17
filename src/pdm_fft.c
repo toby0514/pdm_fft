@@ -300,7 +300,7 @@ pcm_fft_print(void)
 				//am_util_stdio_printf(" integer:%d",pi16PDMData[i]);
 				//
 				//Dec2Hex
-			  am_util_stdio_printf(" integer:%d",pi16PDMData[i]);
+			  //am_util_stdio_printf(" integer:%d",pi16PDMData[i]);
 			
 				for(int k = 0; k < 4; k++)
 				{
@@ -325,11 +325,11 @@ pcm_fft_print(void)
 						roundCount2++;
 					}
 				}
-				am_util_stdio_printf("\nBin: ");
+				//am_util_stdio_printf("\nBin: ");
 				while(roundCount2 != 0)
 				{
 					roundCount2--;
-					am_util_stdio_printf("%d",binValue[roundCount2]);
+					am_util_stdio_printf("%d,",binValue[roundCount2]);
 				}
 				
 				
