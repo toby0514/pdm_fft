@@ -89,6 +89,7 @@ float g_fPDMTimeDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
 float g_fPDMFrequencyDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
 float g_fPDMMagnitudes[AUDIO_FRAME_SIZE_MONO_BYTES/2];
 volatile float *Data = (volatile float *)0x10040000;
+int value_led = 0;
 //uint32_t g_ui32SampleFreq;
 
 //*****************************************************************************
@@ -103,7 +104,7 @@ am_hal_pdm_config_t g_sPdmConfig =
     .eClkDivider = AM_HAL_PDM_MCLKDIV_1,
     .eLeftGain = AM_HAL_PDM_GAIN_P105DB,
     .eRightGain = AM_HAL_PDM_GAIN_P105DB,
-    .ui32DecimationRate = 64,
+    .ui32DecimationRate = 48,
     .bHighPassEnable = 0,                           
     .ui32HighPassCutoff = 0xB,
     .ePDMClkSpeed = AM_HAL_PDM_CLK_1_5MHZ,
@@ -407,6 +408,8 @@ main(void)
     am_hal_cachectrl_enable();
     //am_bsp_low_power_init();
 
+    am_devices_led_array_init(am_bsp_psLEDs, AM_BSP_NUM_LEDS);	//------------------
+		am_devices_led_array_out (am_bsp_psLEDs, AM_BSP_NUM_LEDS , value_led);//--------
     //
     // Initialize the printf interface for ITM output
     //
@@ -422,11 +425,16 @@ main(void)
     // Turn on the PDM, set it up for our chosen recording settings, and start
     // the first DMA transaction.
     //
+		am_devices_led_on(am_bsp_psLEDs, 4);
+    am_util_delay_ms(300);
     pdm_init();
     pdm_config_print();
     am_hal_pdm_fifo_flush(PDMHandle);
+		
+
     pdm_data_get();
 
+		am_devices_led_off(am_bsp_psLEDs, 4);
     //
     // Loop forever while sleeping.
     //

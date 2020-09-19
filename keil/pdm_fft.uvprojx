@@ -440,6 +440,21 @@
             </File>
           </Files>
         </Group>
+        <Group>
+          <GroupName>devices</GroupName>
+          <Files>
+            <File>
+              <FileName>am_devices_led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\devices\am_devices_led.c</FilePath>
+            </File>
+            <File>
+              <FileName>am_devices_button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\devices\am_devices_button.c</FilePath>
+            </File>
+          </Files>
+        </Group>
       </Groups>
     </Target>
   </Targets>
