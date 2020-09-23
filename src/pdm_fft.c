@@ -91,7 +91,10 @@ float g_fPDMMagnitudes[AUDIO_FRAME_SIZE_MONO_BYTES/2];
 volatile float *Data = (volatile float *)0x10040000;
 int value_led = 0;
 //uint32_t g_ui32SampleFreq;
-
+/*am_devices_button_t am_bsp_psButton0 =
+{
+    AM_DEVICES_BUTTON(AM_BSP_GPIO_BUTTON0, AM_DEVICES_BUTTON_NORMAL_HIGH)
+};*/
 //*****************************************************************************
 //
 // PDM configuration information.
@@ -145,6 +148,12 @@ pdm_init(void)
 
     sPinCfg.uFuncSel = AM_HAL_PIN_12_PDMCLK;
     am_hal_gpio_pinconfig(12, sPinCfg);
+		
+		//GPIO輸入
+
+		sPinCfg.uFuncSel = AM_HAL_PIN_48_GPIO;
+		sPinCfg.eGPInput = AM_HAL_GPIO_PIN_INPUT_ENABLE;
+    am_hal_gpio_pinconfig(48, sPinCfg);
 
     am_hal_gpio_state_write(14, AM_HAL_GPIO_OUTPUT_CLEAR);
     am_hal_gpio_pinconfig(14, g_AM_HAL_GPIO_OUTPUT);
@@ -285,7 +294,7 @@ pcm_fft_print(void)
 {
    // float fMaxValue;
    // uint32_t ui32MaxIndex;
-    uint16_t *pi16PDMData = (uint16_t *) g_ui32PDMDataBuffer;
+   //uint16_t *pi16PDMData = (uint16_t *) g_ui32PDMDataBuffer;
    // uint32_t ui32LoudestFrequency;
 	
     //
@@ -383,6 +392,7 @@ pcm_fft_print(void)
     }
 //    am_util_stdio_printf("Loudest frequency: %d         \r", ui32LoudestFrequency);
 		am_util_stdio_printf("Loudest frequency: %d\n", ui32LoudestFrequency);*/
+		
 }
 
 //*****************************************************************************
@@ -407,9 +417,12 @@ main(void)
     am_hal_cachectrl_config(&am_hal_cachectrl_defaults);
     am_hal_cachectrl_enable();
     //am_bsp_low_power_init();
-
+	
+		//Initialize LED 
     am_devices_led_array_init(am_bsp_psLEDs, AM_BSP_NUM_LEDS);	//------------------
 		am_devices_led_array_out (am_bsp_psLEDs, AM_BSP_NUM_LEDS , value_led);//--------
+	
+		//am_devices_button_array_init(am_bsp_psButton0,AM_BSP_NUM_BUTTONS);
     //
     // Initialize the printf interface for ITM output
     //
@@ -425,6 +438,8 @@ main(void)
     // Turn on the PDM, set it up for our chosen recording settings, and start
     // the first DMA transaction.
     //
+		//am_devices_button_t
+    
 		am_devices_led_on(am_bsp_psLEDs, 4);
     am_util_delay_ms(300);
     pdm_init();
@@ -432,7 +447,7 @@ main(void)
     am_hal_pdm_fifo_flush(PDMHandle);
 		
 
-    pdm_data_get();
+    //pdm_data_get();
 
 		am_devices_led_off(am_bsp_psLEDs, 4);
     //
@@ -453,7 +468,9 @@ main(void)
             //
             // Start converting the next set of PCM samples.
             //
+						//am_devices_led_on(am_bsp_psLEDs, 4);
             //pdm_data_get();
+						//am_devices_led_off(am_bsp_psLEDs, 4);
         }
 
         //
