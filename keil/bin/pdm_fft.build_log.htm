@@ -22,7 +22,7 @@ Dialog DLL:      TCM.DLL V1.46.0.0
  
 <h2>Project:</h2>
 C:\keil_Code\AmbiqSuite-R2.4.2\boards\apollo3_evb\examples\pdm_fft\keil\pdm_fft.uvprojx
-Project File Date:  09/20/2020
+Project File Date:  09/24/2020
 
 <h2>Output:</h2>
   
@@ -37,11 +37,18 @@ compiling am_util_faultisr.c...
 compiling am_devices_led.c...
 compiling am_devices_button.c...
 compiling pdm_fft.c...
+../src/pdm_fft.c(340): warning:  #177-D: variable "ui32Ret"  was declared but never referenced
+      uint32_t ui32Ret;
+../src/pdm_fft.c(341): warning:  #177-D: variable "eBurstMode"  was declared but never referenced
+  	  am_hal_burst_mode_e     eBurstMode;
+../src/pdm_fft.c(342): warning:  #177-D: variable "eBurstModeAvailable"  was declared but never referenced
+      am_hal_burst_avail_e    eBurstModeAvailable;
+../src/pdm_fft.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=8742 RO-data=1146 RW-data=152 ZI-data=6512  
+Program Size: Code=8898 RO-data=1146 RW-data=172 ZI-data=38516  
 After Build - User command #1: fromelf --bin --output bin\pdm_fft.bin bin\pdm_fft.axf
 After Build - User command #2: fromelf -cedrst --output bin\pdm_fft.txt bin\pdm_fft.axf
-".\bin\pdm_fft.axf" - 0 Error(s), 1 Warning(s).
+".\bin\pdm_fft.axf" - 0 Error(s), 4 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -54,7 +61,7 @@ Package Vendor: AmbiqMicro
   C:\Users\HiBiKi\AppData\Local\Arm\Packs\AmbiqMicro\Apollo_DFP\1.2.0\Device\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

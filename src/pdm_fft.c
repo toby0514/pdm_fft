@@ -14,44 +14,6 @@
 //
 //*****************************************************************************
 
-//*****************************************************************************
-//
-// Copyright (c) 2020, Ambiq Micro
-// All rights reserved.
-//
-// Redistribution and use in source and binary forms, with or without
-// modification, are permitted provided that the following conditions are met:
-//
-// 1. Redistributions of source code must retain the above copyright notice,
-// this list of conditions and the following disclaimer.
-//
-// 2. Redistributions in binary form must reproduce the above copyright
-// notice, this list of conditions and the following disclaimer in the
-// documentation and/or other materials provided with the distribution.
-//
-// 3. Neither the name of the copyright holder nor the names of its
-// contributors may be used to endorse or promote products derived from this
-// software without specific prior written permission.
-//
-// Third party software included in this distribution is subject to the
-// additional license terms as defined in the /docs/licenses directory.
-//
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-// ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-// CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-// POSSIBILITY OF SUCH DAMAGE.
-//
-// This is part of revision 2.4.2 of the AmbiqSuite Development Package.
-//
-//*****************************************************************************
-
 #define ARM_MATH_CM4
 #include <arm_math.h>
 #include "am_mcu_apollo.h"
@@ -66,41 +28,83 @@
 
 //*****************************************************************************
 //
-// Example parameters.
+// 
 //
 //*****************************************************************************
-#define PDM_FFT_SIZE                AUDIO_FRAME_SIZE_MONO_BYTES/4
-#define PDM_FFT_BYTES               (PDM_FFT_SIZE * 2)
+//#define PDM_FFT_SIZE                AUDIO_FRAME_SIZE_MONO_BYTES/4
+//#define PDM_FFT_BYTES               (PDM_FFT_SIZE * 2)
 #define PRINT_PDM_DATA              1
 #define PRINT_FFT_DATA              0 
-#define AUDIO_FRAME_MS 							1000
-#define g_ui32SampleFreq        ((16000)/(1000/AUDIO_FRAME_MS))
-#define AUDIO_FRAME_SIZE_MONO_BYTES     (g_ui32SampleFreq*2)
-#define AUDIO_FRAME_SIZE_STEREO_BYTES   (g_ui32SampleFreq*4)
+#define AUDIO_FRAME_MS 							1000                          //單位:ms 
+#define g_ui32SampleFreq        ((16000*AUDIO_FRAME_MS)/1000)     //default 16khz
+#define AUDIO_FRAME_SIZE_MONO_BYTES     (g_ui32SampleFreq*2)      //單聲道
+#define AUDIO_FRAME_SIZE_STEREO_BYTES   (g_ui32SampleFreq*4)      //雙聲道
+
+//*****************************************************************************
+//
+// Macros 
+//
+//*****************************************************************************
+#define     FASTGPIO_PIN_A      0
+#define     FASTGPIO_PIN_B      1
+#define     FASTGPIO_PIN_C      2
+#define     FASTGPIO_PIN_D      3
+#define     FASTGPIO_PIN_E      4
+#define     FASTGPIO_PIN_F      5
+#define     FASTGPIO_PIN_G      6
+#define     FASTGPIO_PIN_H      7
+
 
 //*****************************************************************************
 //
 // Global variables.
 //
 //*****************************************************************************
-volatile bool g_bPDMDataReady = false;
-uint32_t g_ui32PDMDataBuffer[AUDIO_FRAME_SIZE_MONO_BYTES/4];
-float g_fPDMTimeDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
-float g_fPDMFrequencyDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
-float g_fPDMMagnitudes[AUDIO_FRAME_SIZE_MONO_BYTES/2];
-volatile float *Data = (volatile float *)0x10040000;
 int value_led = 0;
+int counter = 0;
+volatile bool g_bPDMDataReady = false;
+uint32_t g_ui32PDMDataBuffer[AUDIO_FRAME_SIZE_MONO_BYTES/4];  //存放已轉完的PCM data
+// volatile float *Data = (volatile float *)0x10040000;       //測試存放資料用記憶體位置
+
+
+// float g_fPDMTimeDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
+// float g_fPDMFrequencyDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
+// float g_fPDMMagnitudes[AUDIO_FRAME_SIZE_MONO_BYTES/2];
+
+
+const am_hal_gpio_pincfg_t gpio_clock_in =
+{
+		.uFuncSel            = 3,
+		//.eDriveStrength      = AM_HAL_GPIO_PIN_DRIVESTRENGTH_2MA,
+		.eGPInput            = AM_HAL_GPIO_PIN_INPUT_ENABLE,
+		.eIntDir 						 = AM_HAL_GPIO_PIN_INTDIR_LO2HI,
+};
+
+// Timer configurations.
+am_hal_ctimer_config_t g_sTimer3 =
+{
+    // do not link A and B together to make a long 32-bit counter.
+    0,
+    // Set up timer 3A to drive the ADC
+    (AM_HAL_CTIMER_FN_PWM_REPEAT |
+     AM_HAL_CTIMER_HFRC_3MHZ),
+    // Timer 3B is not used in this example.
+    0,
+};
+
 //uint32_t g_ui32SampleFreq;
 /*am_devices_button_t am_bsp_psButton0 =
 {
     AM_DEVICES_BUTTON(AM_BSP_GPIO_BUTTON0, AM_DEVICES_BUTTON_NORMAL_HIGH)
 };*/
+
 //*****************************************************************************
 //
-// PDM configuration information.
+// HANDLE configuration information.
 //
 //*****************************************************************************
 void *PDMHandle;
+void *GPIOHandle;
 
 am_hal_pdm_config_t g_sPdmConfig =
 {
@@ -127,8 +131,7 @@ am_hal_pdm_config_t g_sPdmConfig =
 // PDM initialization.
 //
 //*****************************************************************************
-void
-pdm_init(void)
+void pdm_init(void)
 {
     //
     // Initialize, power-up, and configure the PDM.
@@ -138,6 +141,7 @@ pdm_init(void)
     am_hal_pdm_configure(PDMHandle, &g_sPdmConfig);
     am_hal_pdm_enable(PDMHandle);
 
+    //am_util_stdio_printf("pdm init1111.\n\n");
     //
     // Configure the necessary pins.
     //
@@ -146,18 +150,16 @@ pdm_init(void)
     sPinCfg.uFuncSel = AM_HAL_PIN_11_PDMDATA;
     am_hal_gpio_pinconfig(11, sPinCfg);
 
+    //am_util_stdio_printf("pdm init111122.\n\n");
     sPinCfg.uFuncSel = AM_HAL_PIN_12_PDMCLK;
     am_hal_gpio_pinconfig(12, sPinCfg);
 		
-		//GPIO輸入
-
-		sPinCfg.uFuncSel = AM_HAL_PIN_48_GPIO;
-		sPinCfg.eGPInput = AM_HAL_GPIO_PIN_INPUT_ENABLE;
-    am_hal_gpio_pinconfig(48, sPinCfg);
+    //am_util_stdio_printf("pdm init111112222.\n\n");
 
     am_hal_gpio_state_write(14, AM_HAL_GPIO_OUTPUT_CLEAR);
     am_hal_gpio_pinconfig(14, g_AM_HAL_GPIO_OUTPUT);
 
+    //am_util_stdio_printf("pdm init2222.\n\n");
     //
     // Configure and enable PDM interrupts (set up to trigger on DMA
     // completion).
@@ -167,6 +169,7 @@ pdm_init(void)
                                             | AM_HAL_PDM_INT_UNDFL
                                             | AM_HAL_PDM_INT_OVF));
 
+    //am_util_stdio_printf("pdm init3333.\n\n");
     NVIC_EnableIRQ(PDM_IRQn);
 }
 
@@ -175,12 +178,11 @@ pdm_init(void)
 // Print PDM configuration data.
 //
 //*****************************************************************************
-void
-pdm_config_print(void)
+void pdm_config_print(void)
 {
     uint32_t ui32PDMClk;
     //uint32_t ui32MClkDiv;
-    float fFrequencyUnits;
+    //float fFrequencyUnits;
 
     //
     // Read the config structure to figure out what our internal clock is set
@@ -218,23 +220,18 @@ pdm_config_print(void)
     //g_ui32SampleFreq = (ui32PDMClk /(ui32MClkDiv * 2 * g_sPdmConfig.ui32DecimationRate));
 		//g_ui32SampleFreq   = (uint32_t)((16000)/(1000/AUDIO_FRAME_MS));
 
-    fFrequencyUnits = (float) g_ui32SampleFreq / (float) PDM_FFT_SIZE;
+    //fFrequencyUnits = (float) g_ui32SampleFreq / (float) PDM_FFT_SIZE;
 
     am_util_stdio_printf("Settings:\n");
     am_util_stdio_printf("PDM Clock (Hz):         %12d\n", ui32PDMClk);
     am_util_stdio_printf("Decimation Rate:        %12d\n", g_sPdmConfig.ui32DecimationRate);
     am_util_stdio_printf("Effective Sample Freq.: %12d\n", g_ui32SampleFreq);
-    am_util_stdio_printf("FFT Length:             %12d\n\n", PDM_FFT_SIZE);
-    am_util_stdio_printf("FFT Resolution: %15.3f Hz\n", fFrequencyUnits);
+    //am_util_stdio_printf("FFT Length:             %12d\n\n", PDM_FFT_SIZE);
+    //am_util_stdio_printf("FFT Resolution: %15.3f Hz\n", fFrequencyUnits);
 }
 
-//*****************************************************************************
-//
-// Start a transaction to get some number of bytes from the PDM interface.
-//
-//*****************************************************************************
-void
-pdm_data_get(void)
+//啟動PDM DMA傳輸
+void pdm_data_get(void)
 {
     //
     // Configure DMA and target address.
@@ -242,7 +239,7 @@ pdm_data_get(void)
     am_hal_pdm_transfer_t sTransfer;
     sTransfer.ui32TargetAddr = (uint32_t ) g_ui32PDMDataBuffer;
 		//am_util_stdio_printf("%d",g_ui32PDMDataBuffer);
-    sTransfer.ui32TotalCount = PDM_FFT_BYTES*2;
+    sTransfer.ui32TotalCount = AUDIO_FRAME_SIZE_MONO_BYTES;
 
     //
     // Start the data transfer.
@@ -258,8 +255,7 @@ pdm_data_get(void)
 // PDM interrupt handler.
 //
 //*****************************************************************************
-void
-am_pdm0_isr(void)
+void am_pdm0_isr(void)
 {
     uint32_t ui32Status;
 
@@ -269,6 +265,8 @@ am_pdm0_isr(void)
     am_hal_pdm_interrupt_status_get(PDMHandle, &ui32Status, true);
     am_hal_pdm_interrupt_clear(PDMHandle, ui32Status);
 
+	  counter++;
+    //am_util_stdio_printf("PDM Interrupt.  ui32Status = %d \n\n" , ui32Status);
     //
     // Once our DMA transaction completes, we will disable the PDM and send a
     // flag back down to the main routine. Disabling the PDM is only necessary
@@ -277,137 +275,71 @@ am_pdm0_isr(void)
     // allow the CPU to run the FFT in one buffer while the DMA pulls PCM data
     // into another buffer.
     //
+    //DMA 傳輸完成
+    //am_util_stdio_printf("PDM Interrupt.  counter = %d \n\n" , counter);
     if (ui32Status & AM_HAL_PDM_INT_DCMP)
     {
         am_hal_pdm_disable(PDMHandle);
         g_bPDMDataReady = true;
+    am_util_stdio_printf("PDM Interrupt.  counter = %d \n\n" , counter);
+    am_util_stdio_printf("PDM Interrupt.  Complete \n\n");
     }
 }
 
-//*****************************************************************************
-//
-// Analyze and print frequency data.
-//
-//*****************************************************************************
-void
-pcm_fft_print(void)
+//GPIO Interrupt
+void am_gpio_isr(void)
 {
-   // float fMaxValue;
-   // uint32_t ui32MaxIndex;
-   //uint16_t *pi16PDMData = (uint16_t *) g_ui32PDMDataBuffer;
-   // uint32_t ui32LoudestFrequency;
-	
-    //
-    // Convert the PDM samples to floats, and arrange them in the format
-    // required by the FFT function.
-    //
-    for (uint16_t i = 0; i < AUDIO_FRAME_SIZE_MONO_BYTES/4; i++)
-    {
-			/*
-				int hexValue[4];
-				int binValue[16];
-				int hexRound = 0;
-				int roundCount = 0,roundCount2 = 0;
-				//am_util_stdio_printf(" integer:%d",pi16PDMData[i]);
-				//
-				//Dec2Hex
-			  am_util_stdio_printf(" integer:%d\n\r",(int16_t)pi16PDMData[i]);
-			
-				for(int k = 0; k < 4; k++)
-				{
-					hexValue[hexRound] = pi16PDMData[i] % 16;
-					pi16PDMData[i] = pi16PDMData[i] / 16;
-					hexRound++;
-					roundCount++;
-				}
-			//	am_util_stdio_printf("\nHex: ");
-				while(hexRound != 0)
-				{
-					hexRound--;
-				//	am_util_stdio_printf("%d",hexValue[hexRound]);
-				}
-				//Hex2Bin
-				for(int j = 0; j < roundCount; j++)
-				{
-					for(int k = 0; k <= 4; k++)
-					{
-						binValue[j*4 + k] = hexValue[j] % 2;
-						hexValue[j] = hexValue[j] / 2;
-						roundCount2++;
-					}
-				}
-				//am_util_stdio_printf("\nBin: ");
-				while(roundCount2 != 0)
-				{
-					roundCount2--;
-					//am_util_stdio_printf("%d,",binValue[roundCount2]);
-				}
-				*/
-				
+  uint64_t gpioStatus;
+  am_hal_gpio_interrupt_status_get(true,&gpioStatus);//取得gpio狀態
+  // AM_HAL_GPIO_MASKCREATE(GpioIntMask);
+  // am_hal_gpio_interrupt_clear(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
+	// am_hal_gpio_interrupt_enable(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
+  
+    am_util_stdio_printf("GPIO ISR Status = %d \n", gpioStatus);
 
-				//*(Data + i) = pi16PDMData[i];
-
-				//print_PDM_data,PCM_data
-        if (PRINT_PDM_DATA)
-        {		
-            //am_util_stdio_printf("%d ", pi16PDMData[i]);
-        }	
-       /* g_fPDMTimeDomain[2 * i] = pi16PDMData[i] / 1.0;
-        g_fPDMTimeDomain[2 * i + 1] = 0.0;*/
-    }
-		
-    if (PRINT_PDM_DATA)
-    {
-        am_util_stdio_printf("END\n");
-    }
-
-    //
-    // Perform the FFT.
-    //
-    /*arm_cfft_radix4_instance_f32 S;
-    arm_cfft_radix4_init_f32(&S, PDM_FFT_SIZE, 0, 1);
-    arm_cfft_radix4_f32(&S, g_fPDMTimeDomain);
-    arm_cmplx_mag_f32(g_fPDMTimeDomain, g_fPDMMagnitudes, PDM_FFT_SIZE);
-
-    if (PRINT_FFT_DATA)
-    {
-        for (uint32_t i = 0; i < PDM_FFT_SIZE / 2; i++)
-        {
-            am_util_stdio_printf("%f\n", g_fPDMMagnitudes[i]);
-        }
-
-        am_util_stdio_printf("END\n");
-    }
-
-    //
-    // Find the frequency bin with the largest magnitude.
-    //
-    arm_max_f32(g_fPDMMagnitudes, PDM_FFT_SIZE / 2, &fMaxValue, &ui32MaxIndex);
-
-    ui32LoudestFrequency = (g_ui32SampleFreq * ui32MaxIndex) / PDM_FFT_SIZE;
-
-    if (PRINT_FFT_DATA)
-    {
-				am_util_stdio_printf("Loudest frequency bin: %d\n", ui32MaxIndex);
-    }
-//    am_util_stdio_printf("Loudest frequency: %d         \r", ui32LoudestFrequency);
-		am_util_stdio_printf("Loudest frequency: %d\n", ui32LoudestFrequency);*/
-		
 }
+
+//設定PWM Clock
+void timer_init(void)
+{
+//
+// Only CTIMER 3 supports the ADC.
+//
+#define TIMERNUM    3
+    uint32_t ui32Period ; // Set for 2 second (2000ms) period
+
+    // LFRC has to be turned on for this example because we are running this
+    // timer off of the LFRC.
+   //am_hal_clkgen_control(AM_HAL_CLKGEN_CONTROL_XTAL_START, 0);
+
+    // Set up timer 3A so start by clearing it.
+    am_hal_ctimer_clear(TIMERNUM, AM_HAL_CTIMER_TIMERA);
+
+    // Configure the timer to count 32Hz LFRC clocks but don't start it yet.
+    am_hal_ctimer_config(TIMERNUM, &g_sTimer3);
+
+    // Compute CMPR value needed for desired period based on a 32HZ clock.
+		ui32Period = 185;
+    am_hal_ctimer_period_set(TIMERNUM, AM_HAL_CTIMER_TIMERA,
+                             ui32Period, (ui32Period >> 1));
+
+    // Set up timer 3A as the trigger source for the ADC.
+    am_hal_ctimer_adc_trigger_enable();
+
+    // Start timer 3A.
+    am_hal_ctimer_start(TIMERNUM, AM_HAL_CTIMER_TIMERA);//................................
+} 
 
 //*****************************************************************************
 //
 // Main
 //
 //*****************************************************************************
-int
-main(void)
+int main(void)
 {
-/*		int opt, ret, dataCount;
-		int finished = 0;
-		unsigned int pdmSamplingF, decimationF, pcmSamplingF, pdmBufLen, pcmBufLen;
-		uint8_t* pdmBuf;
-		int16_t* pcmBuf;*/
+    uint32_t ui32Ret;
+	  am_hal_burst_mode_e     eBurstMode;
+    am_hal_burst_avail_e    eBurstModeAvailable;
 	
     //
     // Perform the standard initialzation for clocks, cache settings, and
@@ -417,65 +349,112 @@ main(void)
     am_hal_cachectrl_config(&am_hal_cachectrl_defaults);
     am_hal_cachectrl_enable();
     //am_bsp_low_power_init();
+
+		//am_hal_gpio_interrupt_register(48, GPIOHandle);
 	
 		//Initialize LED 
     am_devices_led_array_init(am_bsp_psLEDs, AM_BSP_NUM_LEDS);	//------------------
 		am_devices_led_array_out (am_bsp_psLEDs, AM_BSP_NUM_LEDS , value_led);//--------
+		//am_hal_gpio_pinconfig( 48 ,  gpio_clock_in);		//設置第48pin的clock為Lo2Hi interrupt
 	
 		//am_devices_button_array_init(am_bsp_psButton0,AM_BSP_NUM_BUTTONS);
     //
     // Initialize the printf interface for ITM output
     //
     am_bsp_itm_printf_enable();
-
     //
     // Print the banner.
     //
     am_util_stdio_terminal_clear();
-    am_util_stdio_printf("PDM FFT example.\n\n");
+    am_util_stdio_printf("PDM example.\n\n");
 
+    // 設置快速GPIO
+    // am_hal_gpio_fastgpio_disable(FASTGPIO_PIN_B);
+    // am_hal_gpio_fastgpio_clr(FASTGPIO_PIN_B);
+    // AM_HAL_GPIO_MASKCREATE(sFastGpioMask);
+    // ui32Ret = am_hal_gpio_fast_pinconfig(AM_HAL_GPIO_MASKBIT(psFastGpioMask, 48),
+                                        //  g_AM_HAL_GPIO_OUTPUT_12, 0);
+																				 
+																	
+		am_devices_led_on(am_bsp_psLEDs, 4);
+    am_util_delay_ms(300);
+    			 
+	  // Clear the GPIO Interrupt (write to clear).
+    AM_HAL_GPIO_MASKCREATE(GpioIntMask);
+    am_hal_gpio_interrupt_clear(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
+
+    //am_util_stdio_printf("11111.\n\n");
+    // Enable the GPIO/button interrupt.
+    am_hal_gpio_interrupt_enable(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
+
+    //am_util_stdio_printf("22222.\n\n");
+    // Enable the timer interrupt in the NVIC.
+		NVIC_EnableIRQ(GPIO_IRQn);
+    //am_util_stdio_printf("33333.\n\n");
+    am_hal_interrupt_master_enable();
     //
     // Turn on the PDM, set it up for our chosen recording settings, and start
     // the first DMA transaction.
     //
-		//am_devices_button_t
+    am_devices_led_on(am_bsp_psLEDs, 1);
     
-		am_devices_led_on(am_bsp_psLEDs, 4);
-    am_util_delay_ms(300);
+
+    //超頻模式
+    /*
+    if ( am_hal_burst_mode_initialize(&eBurstModeAvailable) == AM_HAL_STATUS_SUCCESS )
+    {
+        if ( eBurstModeAvailable == AM_HAL_BURST_AVAIL )
+        {
+            am_util_stdio_printf("\nTurboSPOT mode is Available\n");
+						
+            //進入超頻模式
+            if ( am_hal_burst_mode_enable(&eBurstMode) == AM_HAL_STATUS_SUCCESS )
+            {
+                if ( eBurstMode == AM_HAL_BURST_MODE )
+                {
+                    am_util_stdio_printf("Operating in TurboSPOT mode (%dMHz)\n",
+                                         AM_HAL_CLKGEN_FREQ_MAX_MHZ * 2);
+                }
+            }
+            else
+                am_util_stdio_printf("Failed to Enable TurboSPOT mode operation\n");
+        }
+        else
+            am_util_stdio_printf("TurboSPOT mode is Not Available\n");
+    }
+    else
+        am_util_stdio_printf("Failed to Initialize for TurboSPOT mode operation\n");
+    */
+		
     pdm_init();
+    //am_util_stdio_printf("44444.\n\n");
     pdm_config_print();
     am_hal_pdm_fifo_flush(PDMHandle);
 		
 
-    //pdm_data_get();
+    pdm_data_get();
 
 		am_devices_led_off(am_bsp_psLEDs, 4);
-    //
-    // Loop forever while sleeping.
-    //
+
+    // while loop 持續錄音
     while (1)
     {
-        am_hal_interrupt_master_disable();
+        am_hal_interrupt_master_disable();  //取消interrupt
 
         if (g_bPDMDataReady)
         {
             g_bPDMDataReady = false;
 
-            pcm_fft_print();
+            //pcm_fft_print();
 
             while (PRINT_PDM_DATA || PRINT_FFT_DATA);
 
-            //
-            // Start converting the next set of PCM samples.
-            //
 						//am_devices_led_on(am_bsp_psLEDs, 4);
             //pdm_data_get();
 						//am_devices_led_off(am_bsp_psLEDs, 4);
         }
 
-        //
-        // Go to Deep Sleep.
-        //
+        // 進入睡眠模式
         am_hal_sysctrl_sleep(AM_HAL_SYSCTRL_SLEEP_DEEP);
 
         am_hal_interrupt_master_enable();
