@@ -65,7 +65,7 @@ int counter = 0;
 volatile bool g_bPDMDataReady = false;
 uint32_t g_ui32PDMDataBuffer[AUDIO_FRAME_SIZE_MONO_BYTES/4];  //存放已轉完的PCM data
 // volatile float *Data = (volatile float *)0x10040000;       //測試存放資料用記憶體位置
-
+uint32_t portValue;
 
 // float g_fPDMTimeDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
 // float g_fPDMFrequencyDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
@@ -78,6 +78,15 @@ const am_hal_gpio_pincfg_t gpio_clock_in =
 		//.eDriveStrength      = AM_HAL_GPIO_PIN_DRIVESTRENGTH_2MA,
 		.eGPInput            = AM_HAL_GPIO_PIN_INPUT_ENABLE,
 		.eIntDir 						 = AM_HAL_GPIO_PIN_INTDIR_LO2HI,
+};
+
+const am_hal_gpio_pincfg_t gpio_data = 
+{
+	 	.uFuncSel            = 3,   
+		.ePullup 						 = AM_HAL_GPIO_PIN_PULLUP_NONE,
+    .eGPInput            = AM_HAL_GPIO_PIN_INPUT_ENABLE,
+		.eGPOutcfg           = AM_HAL_GPIO_PIN_OUTCFG_DISABLE,
+		.eGPRdZero 					 = AM_HAL_GPIO_PIN_RDZERO_READPIN,
 };
 
 // Timer configurations.
@@ -153,7 +162,6 @@ void pdm_init(void)
     //am_util_stdio_printf("pdm init111122.\n\n");
     sPinCfg.uFuncSel = AM_HAL_PIN_12_PDMCLK;
     am_hal_gpio_pinconfig(12, sPinCfg);
-		
     //am_util_stdio_printf("pdm init111112222.\n\n");
 
     am_hal_gpio_state_write(14, AM_HAL_GPIO_OUTPUT_CLEAR);
@@ -265,7 +273,7 @@ void am_pdm0_isr(void)
     am_hal_pdm_interrupt_status_get(PDMHandle, &ui32Status, true);
     am_hal_pdm_interrupt_clear(PDMHandle, ui32Status);
 
-	  counter++;
+	  
     //am_util_stdio_printf("PDM Interrupt.  ui32Status = %d \n\n" , ui32Status);
     //
     // Once our DMA transaction completes, we will disable the PDM and send a
@@ -290,13 +298,21 @@ void am_pdm0_isr(void)
 void am_gpio_isr(void)
 {
   uint64_t gpioStatus;
-  am_hal_gpio_interrupt_status_get(true,&gpioStatus);//取得gpio狀態
-  // AM_HAL_GPIO_MASKCREATE(GpioIntMask);
-  // am_hal_gpio_interrupt_clear(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
-	// am_hal_gpio_interrupt_enable(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
+	counter++;
+  //am_hal_gpio_interrupt_status_get(true,&gpioStatus);//取得gpio狀態
+  //AM_HAL_GPIO_MASKCREATE(GpioIntMask);
+  //am_hal_gpio_interrupt_clear(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
+	//am_hal_gpio_interrupt_enable(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
   
-    am_util_stdio_printf("GPIO ISR Status = %d \n", gpioStatus);
-
+  //am_util_stdio_printf("GPIO ISR Status = %d \n", gpioStatus);
+  uint32_t res = am_hal_gpio_state_read(49,AM_HAL_GPIO_INPUT_READ,&portValue);
+	am_util_stdio_printf("status : %d\n",res);
+	if(counter == 1500000)
+		{
+			am_util_stdio_printf("disable interrupt!\n");
+			AM_HAL_GPIO_MASKCREATE(sFastGpioMask);
+			am_hal_gpio_interrupt_disable(AM_HAL_GPIO_MASKBIT(psFastGpioMask, 48));
+		}
 }
 
 //設定PWM Clock
@@ -355,8 +371,8 @@ int main(void)
 		//Initialize LED 
     am_devices_led_array_init(am_bsp_psLEDs, AM_BSP_NUM_LEDS);	//------------------
 		am_devices_led_array_out (am_bsp_psLEDs, AM_BSP_NUM_LEDS , value_led);//--------
-		//am_hal_gpio_pinconfig( 48 ,  gpio_clock_in);		//設置第48pin的clock為Lo2Hi interrupt
-	
+		am_hal_gpio_pinconfig( 48 ,  gpio_clock_in);		//設置第48pin的clock為Lo2Hi interrupt
+		am_hal_gpio_pinconfig( 49 ,  gpio_data);
 		//am_devices_button_array_init(am_bsp_psButton0,AM_BSP_NUM_BUTTONS);
     //
     // Initialize the printf interface for ITM output
@@ -368,27 +384,29 @@ int main(void)
     am_util_stdio_terminal_clear();
     am_util_stdio_printf("PDM example.\n\n");
 
-    // 設置快速GPIO
-    // am_hal_gpio_fastgpio_disable(FASTGPIO_PIN_B);
-    // am_hal_gpio_fastgpio_clr(FASTGPIO_PIN_B);
-    // AM_HAL_GPIO_MASKCREATE(sFastGpioMask);
-    // ui32Ret = am_hal_gpio_fast_pinconfig(AM_HAL_GPIO_MASKBIT(psFastGpioMask, 48),
-                                        //  g_AM_HAL_GPIO_OUTPUT_12, 0);
+    // 設置快速GPIO		
+    am_hal_gpio_fastgpio_disable(FASTGPIO_PIN_B);
+    am_hal_gpio_fastgpio_clr(FASTGPIO_PIN_B);
+		am_hal_gpio_fastgpio_enable(FASTGPIO_PIN_B);
+    AM_HAL_GPIO_MASKCREATE(sFastGpioMask);
+    ui32Ret = am_hal_gpio_fast_pinconfig(AM_HAL_GPIO_MASKBIT(psFastGpioMask, 48),
+                                          gpio_clock_in, 0);
 																				 
 																	
 		am_devices_led_on(am_bsp_psLEDs, 4);
     am_util_delay_ms(300);
     			 
 	  // Clear the GPIO Interrupt (write to clear).
-    AM_HAL_GPIO_MASKCREATE(GpioIntMask);
-    am_hal_gpio_interrupt_clear(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
+    //AM_HAL_GPIO_MASKCREATE(sFastGpioMask);
+    am_hal_gpio_interrupt_clear(AM_HAL_GPIO_MASKBIT(psFastGpioMask, 48));
 
     //am_util_stdio_printf("11111.\n\n");
     // Enable the GPIO/button interrupt.
-    am_hal_gpio_interrupt_enable(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
+    am_hal_gpio_interrupt_enable(AM_HAL_GPIO_MASKBIT(psFastGpioMask, 48));
 
     //am_util_stdio_printf("22222.\n\n");
     // Enable the timer interrupt in the NVIC.
+		
 		NVIC_EnableIRQ(GPIO_IRQn);
     //am_util_stdio_printf("33333.\n\n");
     am_hal_interrupt_master_enable();
