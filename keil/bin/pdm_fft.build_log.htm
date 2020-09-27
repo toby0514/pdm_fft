@@ -32,25 +32,27 @@ Warning: *** SUPPORT EXPIRED, NEW PRODUCT SERIAL NUMBER REQUIRED ***
 Rebuild target 'pdm_fft'
 compiling startup_keil.s...
 compiling am_util_stdio.c...
-compiling am_util_delay.c...
 compiling am_devices_button.c...
-compiling am_devices_led.c...
 compiling am_util_faultisr.c...
+compiling am_util_delay.c...
+compiling am_devices_led.c...
 compiling pdm_fft.c...
-../src/pdm_fft.c(300): warning:  #177-D: variable "gpioStatus"  was declared but never referenced
+../src/pdm_fft.c(182): warning:  #550-D: variable "ui32PDMClk"  was set but never used
+      uint32_t ui32PDMClk;
+../src/pdm_fft.c(258): warning:  #177-D: variable "gpioStatus"  was declared but never referenced
     uint64_t gpioStatus;
-../src/pdm_fft.c(356): warning:  #550-D: variable "ui32Ret"  was set but never used
+../src/pdm_fft.c(335): warning:  #177-D: variable "ui32Ret"  was declared but never referenced
       uint32_t ui32Ret;
-../src/pdm_fft.c(357): warning:  #177-D: variable "eBurstMode"  was declared but never referenced
+../src/pdm_fft.c(336): warning:  #177-D: variable "eBurstMode"  was declared but never referenced
   	  am_hal_burst_mode_e     eBurstMode;
-../src/pdm_fft.c(358): warning:  #177-D: variable "eBurstModeAvailable"  was declared but never referenced
+../src/pdm_fft.c(337): warning:  #177-D: variable "eBurstModeAvailable"  was declared but never referenced
       am_hal_burst_avail_e    eBurstModeAvailable;
-../src/pdm_fft.c: 4 warnings, 0 errors
+../src/pdm_fft.c: 5 warnings, 0 errors
 linking...
-Program Size: Code=9328 RO-data=1152 RW-data=176 ZI-data=38512  
+Program Size: Code=8534 RO-data=790 RW-data=196 ZI-data=6628  
 After Build - User command #1: fromelf --bin --output bin\pdm_fft.bin bin\pdm_fft.axf
 After Build - User command #2: fromelf -cedrst --output bin\pdm_fft.txt bin\pdm_fft.axf
-".\bin\pdm_fft.axf" - 0 Error(s), 5 Warning(s).
+".\bin\pdm_fft.axf" - 0 Error(s), 6 Warning(s).
 
 <h2>Software Packages used:</h2>
 
