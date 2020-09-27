@@ -55,6 +55,7 @@
 //*****************************************************************************
 int value_led = 0;
 int counter = 0;
+//int PDM_regCount = 0;
 volatile bool g_bPDMDataReady = false;
 uint32_t g_ui32PDMDataBuffer[AUDIO_FRAME_SIZE_MONO_BYTES/4];  //存放已轉完的PCM data
 volatile unsigned int *PDMData = (volatile unsigned int *)0x10040000;       //測試存放資料用記憶體位置
@@ -74,7 +75,6 @@ const am_hal_gpio_pincfg_t gpio_clock_out =
 		//.eDriveStrength      = AM_HAL_GPIO_PIN_DRIVESTRENGTH_2MA,
 		.eGPOutcfg            = AM_HAL_GPIO_PIN_OUTCFG_PUSHPULL,
 		.eGPRdZero					 = AM_HAL_GPIO_PIN_RDZERO_READPIN,
-		.eIntDir 						 = AM_HAL_GPIO_PIN_INTDIR_LO2HI,
 };
 
 const am_hal_gpio_pincfg_t gpio_data = 
@@ -279,11 +279,10 @@ void am_gpio_isr(void)
 void am_ctimer_isr(void)
 {
   // Clear TimerA0 Interrupt.
- 	//counter++;
-	am_hal_gpio_state_write(12, AM_HAL_GPIO_OUTPUT_TOGGLE);
+ 	//PDM_regCount ++ ;
   uint32_t status = am_hal_ctimer_int_status_get(true);
-	uint32_t res = am_hal_gpio_state_read(49,AM_HAL_GPIO_OUTPUT_READ,&portValue);
-	//*(PDMData + 1) =  portValue; 
+	uint32_t res = am_hal_gpio_state_read(49,AM_HAL_GPIO_INPUT_READ,&portValue);
+	//*(PDMData + PDM_regCount) =  portValue; 
 	am_util_stdio_printf("%d ",portValue);
 	//am_util_stdio_printf("%d ",res);
   am_hal_ctimer_int_clear(status);

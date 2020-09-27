@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\bin\pdm_fft.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\bin\pdm_fft.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Sep 28 02:01:03 2020
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Mon Sep 28 02:09:55 2020
 <BR><P>
 <H3>Maximum Stack Usage =        364 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -236,8 +236,8 @@ Global Symbols
 <BR>[Address Reference Count : 1]<UL><LI> startup_keil.o(RESET)
 </UL>
 <P><STRONG><a name="[2f]"></a>__main</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, __main.o(!!!main))
-<BR><BR>[Calls]<UL><LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry
-<LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
+<BR><BR>[Calls]<UL><LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload
+<LI><a href="#[32]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry
 </UL>
 
 <P><STRONG><a name="[31]"></a>__scatterload</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __scatter.o(!!!scatter))
@@ -387,15 +387,15 @@ Global Symbols
 
 <P><STRONG><a name="[58]"></a>am_hal_interrupt_master_disable</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, am_hal_interrupt.o(.emb_text))
 <BR><BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_sysctrl_sleep
-<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
+<LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
 <LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_pinconfig
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_interrupt_disable
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_start
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_period_set
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_output_config
-<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_status_get
+<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_status_get
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_enable
-<LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_clear
+<LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_clear
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_config
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_clear
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_cachectrl_config
@@ -403,15 +403,15 @@ Global Symbols
 
 <P><STRONG><a name="[59]"></a>am_hal_interrupt_master_set</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, am_hal_interrupt.o(.emb_text))
 <BR><BR>[Called By]<UL><LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_sysctrl_sleep
-<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
+<LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
 <LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_pinconfig
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_interrupt_disable
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_start
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_period_set
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_output_config
-<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_status_get
+<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_status_get
 <LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_enable
-<LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_clear
+<LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_clear
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_config
 <LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_clear
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_cachectrl_config
@@ -486,66 +486,65 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[1b]"></a>am_ctimer_isr</STRONG> (Thumb, 54 bytes, Stack size 16 bytes, pdm_fft.o(i.am_ctimer_isr))
+<P><STRONG><a name="[1b]"></a>am_ctimer_isr</STRONG> (Thumb, 72 bytes, Stack size 16 bytes, pdm_fft.o(i.am_ctimer_isr))
 <BR><BR>[Stack]<UL><LI>Max Depth = 308<LI>Call Chain = am_ctimer_isr &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; ftoa &rArr; uint64_to_str &rArr; divu64_10
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
-<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
-<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_read
-<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_status_get
-<LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_service
-<LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_clear
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
+<LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_read
+<LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_status_get
+<LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_service
+<LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_int_clear
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_keil.o(RESET)
 </UL>
-<P><STRONG><a name="[51]"></a>am_devices_led_array_init</STRONG> (Thumb, 36 bytes, Stack size 16 bytes, am_devices_led.o(i.am_devices_led_array_init))
+<P><STRONG><a name="[50]"></a>am_devices_led_array_init</STRONG> (Thumb, 36 bytes, Stack size 16 bytes, am_devices_led.o(i.am_devices_led_array_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = am_devices_led_array_init &rArr; am_devices_led_init &rArr; am_hal_gpio_pinconfig
 </UL>
-<BR>[Calls]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_init
+<BR>[Calls]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_init
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[53]"></a>am_devices_led_array_out</STRONG> (Thumb, 50 bytes, Stack size 24 bytes, am_devices_led.o(i.am_devices_led_array_out))
+<P><STRONG><a name="[52]"></a>am_devices_led_array_out</STRONG> (Thumb, 50 bytes, Stack size 24 bytes, am_devices_led.o(i.am_devices_led_array_out))
 <BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = am_devices_led_array_out &rArr; am_devices_led_on &rArr; am_hal_gpio_state_write
 </UL>
-<BR>[Calls]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_on
-<LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_off
+<BR>[Calls]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_on
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_off
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[52]"></a>am_devices_led_init</STRONG> (Thumb, 88 bytes, Stack size 8 bytes, am_devices_led.o(i.am_devices_led_init))
+<P><STRONG><a name="[51]"></a>am_devices_led_init</STRONG> (Thumb, 88 bytes, Stack size 8 bytes, am_devices_led.o(i.am_devices_led_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = am_devices_led_init &rArr; am_hal_gpio_pinconfig
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
+<BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
 <LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_pinconfig
 </UL>
-<BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_array_init
+<BR>[Called By]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_array_init
 </UL>
 
-<P><STRONG><a name="[55]"></a>am_devices_led_off</STRONG> (Thumb, 72 bytes, Stack size 16 bytes, am_devices_led.o(i.am_devices_led_off))
+<P><STRONG><a name="[54]"></a>am_devices_led_off</STRONG> (Thumb, 72 bytes, Stack size 16 bytes, am_devices_led.o(i.am_devices_led_off))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = am_devices_led_off &rArr; am_hal_gpio_state_write
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
+<BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
 </UL>
-<BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_array_out
+<BR>[Called By]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_array_out
 <LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[54]"></a>am_devices_led_on</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, am_devices_led.o(i.am_devices_led_on))
+<P><STRONG><a name="[53]"></a>am_devices_led_on</STRONG> (Thumb, 68 bytes, Stack size 16 bytes, am_devices_led.o(i.am_devices_led_on))
 <BR><BR>[Stack]<UL><LI>Max Depth = 40<LI>Call Chain = am_devices_led_on &rArr; am_hal_gpio_state_write
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
+<BR>[Calls]<UL><LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_state_write
 </UL>
-<BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_array_out
+<BR>[Called By]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_array_out
 <LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[1a]"></a>am_gpio_isr</STRONG> (Thumb, 58 bytes, Stack size 24 bytes, pdm_fft.o(i.am_gpio_isr))
 <BR><BR>[Stack]<UL><LI>Max Depth = 316<LI>Call Chain = am_gpio_isr &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; ftoa &rArr; uint64_to_str &rArr; divu64_10
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_interrupt_disable
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_keil.o(RESET)
@@ -595,7 +594,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_init
 </UL>
 
-<P><STRONG><a name="[4f]"></a>am_hal_ctimer_int_clear</STRONG> (Thumb, 26 bytes, Stack size 16 bytes, am_hal_ctimer.o(i.am_hal_ctimer_int_clear))
+<P><STRONG><a name="[4e]"></a>am_hal_ctimer_int_clear</STRONG> (Thumb, 26 bytes, Stack size 16 bytes, am_hal_ctimer.o(i.am_hal_ctimer_int_clear))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = am_hal_ctimer_int_clear
 </UL>
 <BR>[Calls]<UL><LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
@@ -613,13 +612,13 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_init
 </UL>
 
-<P><STRONG><a name="[50]"></a>am_hal_ctimer_int_service</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, am_hal_ctimer.o(i.am_hal_ctimer_int_service))
+<P><STRONG><a name="[4f]"></a>am_hal_ctimer_int_service</STRONG> (Thumb, 46 bytes, Stack size 16 bytes, am_hal_ctimer.o(i.am_hal_ctimer_int_service))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = am_hal_ctimer_int_service
 </UL>
 <BR>[Called By]<UL><LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_ctimer_isr
 </UL>
 
-<P><STRONG><a name="[4c]"></a>am_hal_ctimer_int_status_get</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, am_hal_ctimer.o(i.am_hal_ctimer_int_status_get))
+<P><STRONG><a name="[4b]"></a>am_hal_ctimer_int_status_get</STRONG> (Thumb, 44 bytes, Stack size 16 bytes, am_hal_ctimer.o(i.am_hal_ctimer_int_status_get))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = am_hal_ctimer_int_status_get
 </UL>
 <BR>[Calls]<UL><LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
@@ -677,25 +676,25 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
 </UL>
-<BR>[Called By]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_init
+<BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_init
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_output_config
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_bsp_itm_printf_enable
+<LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[4d]"></a>am_hal_gpio_state_read</STRONG> (Thumb, 90 bytes, Stack size 0 bytes, am_hal_gpio.o(i.am_hal_gpio_state_read))
+<P><STRONG><a name="[4c]"></a>am_hal_gpio_state_read</STRONG> (Thumb, 90 bytes, Stack size 0 bytes, am_hal_gpio.o(i.am_hal_gpio_state_read))
 <BR><BR>[Called By]<UL><LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_ctimer_isr
 </UL>
 
-<P><STRONG><a name="[4b]"></a>am_hal_gpio_state_write</STRONG> (Thumb, 128 bytes, Stack size 24 bytes, am_hal_gpio.o(i.am_hal_gpio_state_write))
+<P><STRONG><a name="[55]"></a>am_hal_gpio_state_write</STRONG> (Thumb, 128 bytes, Stack size 24 bytes, am_hal_gpio.o(i.am_hal_gpio_state_write))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = am_hal_gpio_state_write
 </UL>
 <BR>[Calls]<UL><LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_set
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_disable
 </UL>
-<BR>[Called By]<UL><LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_init
-<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_on
-<LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_off
-<LI><a href="#[1b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_ctimer_isr
+<BR>[Called By]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_init
+<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_on
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_off
 </UL>
 
 <P><STRONG><a name="[47]"></a>am_hal_itm_enable</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, am_hal_itm.o(i.am_hal_itm_enable))
@@ -742,7 +741,7 @@ Global Symbols
 <P><STRONG><a name="[20]"></a>am_pdm0_isr</STRONG> (Thumb, 64 bytes, Stack size 8 bytes, pdm_fft.o(i.am_pdm0_isr))
 <BR><BR>[Stack]<UL><LI>Max Depth = 300<LI>Call Chain = am_pdm0_isr &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; ftoa &rArr; uint64_to_str &rArr; divu64_10
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
 <LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_pdm_interrupt_status_get
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_pdm_interrupt_clear
 <LI><a href="#[66]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_pdm_disable
@@ -763,13 +762,13 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_mcuctrl_info_get
 <LI><a href="#[69]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getStackedReg
-<LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
+<LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 </UL>
 <BR>[Called By]<UL><LI><a href="#[4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;HardFault_Handler
 </UL>
 
-<P><STRONG><a name="[4e]"></a>am_util_stdio_printf</STRONG> (Thumb, 50 bytes, Stack size 32 bytes, am_util_stdio.o(i.am_util_stdio_printf))
+<P><STRONG><a name="[4d]"></a>am_util_stdio_printf</STRONG> (Thumb, 50 bytes, Stack size 32 bytes, am_util_stdio.o(i.am_util_stdio_printf))
 <BR><BR>[Stack]<UL><LI>Max Depth = 292<LI>Call Chain = am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; ftoa &rArr; uint64_to_str &rArr; divu64_10
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_vsprintf
@@ -789,7 +788,7 @@ Global Symbols
 <P><STRONG><a name="[6c]"></a>am_util_stdio_terminal_clear</STRONG> (Thumb, 10 bytes, Stack size 8 bytes, am_util_stdio.o(i.am_util_stdio_terminal_clear))
 <BR><BR>[Stack]<UL><LI>Max Depth = 300<LI>Call Chain = am_util_stdio_terminal_clear &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; ftoa &rArr; uint64_to_str &rArr; divu64_10
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -808,22 +807,23 @@ Global Symbols
 <LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decstr_to_int
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
 </UL>
-<BR>[Called By]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
+<BR>[Called By]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
 </UL>
 
-<P><STRONG><a name="[3c]"></a>main</STRONG> (Thumb, 92 bytes, Stack size 0 bytes, pdm_fft.o(i.main))
+<P><STRONG><a name="[3c]"></a>main</STRONG> (Thumb, 102 bytes, Stack size 0 bytes, pdm_fft.o(i.main))
 <BR><BR>[Stack]<UL><LI>Max Depth = 308<LI>Call Chain = main &rArr; timer_init &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; ftoa &rArr; uint64_to_str &rArr; divu64_10
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_terminal_clear
 <LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_delay_ms
 <LI><a href="#[62]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_sysctrl_sleep
+<LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_gpio_pinconfig
 <LI><a href="#[5a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_clkgen_control
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_cachectrl_enable
 <LI><a href="#[57]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_cachectrl_config
-<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_on
-<LI><a href="#[55]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_off
-<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_array_out
-<LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_array_init
+<LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_on
+<LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_off
+<LI><a href="#[52]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_array_out
+<LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_devices_led_array_init
 <LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_bsp_itm_printf_enable
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;timer_init
 </UL>
@@ -833,7 +833,7 @@ Global Symbols
 <P><STRONG><a name="[78]"></a>timer_init</STRONG> (Thumb, 94 bytes, Stack size 16 bytes, pdm_fft.o(i.timer_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 308<LI>Call Chain = timer_init &rArr; am_util_stdio_printf &rArr; am_util_stdio_vsprintf &rArr; ftoa &rArr; uint64_to_str &rArr; divu64_10
 </UL>
-<BR>[Calls]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
+<BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_util_stdio_printf
 <LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_interrupt_master_enable
 <LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_start
 <LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;am_hal_ctimer_period_set
