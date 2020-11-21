@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: £gVision V5.31.0.0
 Copyright (C) 2020 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Tsung-Min Haung, CCU, LIC=76FSB-2ZSXE-H8PFS-LAMJ9-PZ1PG-PPW7V
+License Information: ZHENG DONG-SHENG, CCU, LIC=PE701-C0DLF-U4TS7-ETRBQ-XURXI-LH45S
  
 Tool Versions:
 Toolchain:       MDK-ARM Plus  Version: 5.31.0.0
@@ -21,8 +21,8 @@ Target DLL:      Segger\JL2CM3.dll V2.99.38.0
 Dialog DLL:      TCM.DLL V1.46.0.0
  
 <h2>Project:</h2>
-C:\Users\Baicala\Desktop\AmbiqSuite-R2.4.2\boards\apollo3_evb\examples\pdm_fft\keil\pdm_fft.uvprojx
-Project File Date:  09/26/2020
+C:\keil_Code\AmbiqSuite-R2.4.2\boards\apollo3_evb\examples\pdm_fft\keil\pdm_fft.uvprojx
+Project File Date:  11/21/2020
 
 <h2>Output:</h2>
   
@@ -34,25 +34,23 @@ compiling startup_keil.s...
 compiling am_util_stdio.c...
 compiling am_devices_button.c...
 compiling am_devices_led.c...
-compiling am_util_delay.c...
 compiling am_util_faultisr.c...
+compiling am_util_delay.c...
 compiling pdm_fft.c...
 ../src/pdm_fft.c(182): warning:  #550-D: variable "ui32PDMClk"  was set but never used
       uint32_t ui32PDMClk;
-../src/pdm_fft.c(258): warning:  #177-D: variable "gpioStatus"  was declared but never referenced
-    uint64_t gpioStatus;
-../src/pdm_fft.c(334): warning:  #177-D: variable "ui32Ret"  was declared but never referenced
+../src/pdm_fft.c(336): warning:  #550-D: variable "ui32Ret"  was set but never used
       uint32_t ui32Ret;
-../src/pdm_fft.c(335): warning:  #177-D: variable "eBurstMode"  was declared but never referenced
+../src/pdm_fft.c(337): warning:  #177-D: variable "eBurstMode"  was declared but never referenced
   	  am_hal_burst_mode_e     eBurstMode;
-../src/pdm_fft.c(336): warning:  #177-D: variable "eBurstModeAvailable"  was declared but never referenced
+../src/pdm_fft.c(338): warning:  #177-D: variable "eBurstModeAvailable"  was declared but never referenced
       am_hal_burst_avail_e    eBurstModeAvailable;
-../src/pdm_fft.c: 5 warnings, 0 errors
+../src/pdm_fft.c: 4 warnings, 0 errors
 linking...
-Program Size: Code=8576 RO-data=796 RW-data=200 ZI-data=6624  
+Program Size: Code=9124 RO-data=800 RW-data=196 ZI-data=6628  
 After Build - User command #1: fromelf --bin --output bin\pdm_fft.bin bin\pdm_fft.axf
 After Build - User command #2: fromelf -cedrst --output bin\pdm_fft.txt bin\pdm_fft.axf
-".\bin\pdm_fft.axf" - 0 Error(s), 6 Warning(s).
+".\bin\pdm_fft.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -62,7 +60,7 @@ Package Vendor: AmbiqMicro
                 Ambiq Micro Apollo Series Device Support
 
 <h2>Collection of Component include folders:</h2>
-  C:\Users\Baicala\AppData\Local\Arm\Packs\AmbiqMicro\Apollo_DFP\1.2.0\Device\Include
+  C:\Users\HiBiKi\AppData\Local\Arm\Packs\AmbiqMicro\Apollo_DFP\1.2.0\Device\Include
 
 <h2>Collection of Component Files used:</h2>
 Build Time Elapsed:  00:00:02

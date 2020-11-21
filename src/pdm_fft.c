@@ -61,14 +61,14 @@ uint32_t g_ui32PDMDataBuffer[AUDIO_FRAME_SIZE_MONO_BYTES/4];  //存放已轉完�
 volatile unsigned int *PDMData = (volatile unsigned int *)0x10040000;       //測試存放資料用記憶體位置
 uint32_t portValue;
 
-/*const am_hal_gpio_pincfg_t gpio_clock_in =
+const am_hal_gpio_pincfg_t gpio_clock_in =
 {
 		.uFuncSel            = 3,
 		//.eDriveStrength      = AM_HAL_GPIO_PIN_DRIVESTRENGTH_2MA,
 		.eGPInput            = AM_HAL_GPIO_PIN_INPUT_ENABLE,
-		//.eIntDir 						 = AM_HAL_GPIO_PIN_INTDIR_LO2HI,
+		.eIntDir 						 = AM_HAL_GPIO_PIN_INTDIR_BOTH,
 };
-*/
+
 const am_hal_gpio_pincfg_t gpio_clock_out =
 {
 		.uFuncSel            = 3,
@@ -257,14 +257,14 @@ void am_gpio_isr(void)
 {
   uint64_t gpioStatus;
 	counter++;
-  //am_hal_gpio_interrupt_status_get(true,&gpioStatus);//取得gpio狀態
-  //AM_HAL_GPIO_MASKCREATE(GpioIntMask);
-  //am_hal_gpio_interrupt_clear(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
-	//am_hal_gpio_interrupt_enable(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
+  am_hal_gpio_interrupt_status_get(true,&gpioStatus);//取得gpio狀態
+  AM_HAL_GPIO_MASKCREATE(GpioIntMask);
+  am_hal_gpio_interrupt_clear(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
+	am_hal_gpio_interrupt_enable(AM_HAL_GPIO_MASKBIT(pGpioIntMask, 48));
   
-  //am_util_stdio_printf("GPIO ISR Status = %d \n", gpioStatus);
-  //uint32_t res = am_hal_gpio_state_read(49,AM_HAL_GPIO_INPUT_READ,&portValue);
-	//am_util_stdio_printf("status : %d\n",res);
+  am_util_stdio_printf("GPIO ISR Status = %d \n", gpioStatus);
+  uint32_t res = am_hal_gpio_state_read(49,AM_HAL_GPIO_INPUT_READ, &portValue);    //讀pin 49的值
+	am_util_stdio_printf("status : %d\n",res);
 	//*(PDM_Data + 1) = *Data;
 	//am_util_stdio_printf("%x\n",*Data);
 	if(counter == 1500000)
@@ -283,7 +283,8 @@ void am_ctimer_isr(void)
   uint32_t status = am_hal_ctimer_int_status_get(true);
 	uint32_t res = am_hal_gpio_state_read(49,AM_HAL_GPIO_INPUT_READ,&portValue);
 	//*(PDMData + PDM_regCount) =  portValue; 
-	am_util_stdio_printf("%d ",portValue);
+	am_util_stdio_printf("%d ",portValue);    //print出pin 49的值
+
 	//am_util_stdio_printf("%d ",res);
   am_hal_ctimer_int_clear(status);
   am_hal_ctimer_int_service(status);
@@ -301,7 +302,7 @@ void timer_init(void)
 		
     // LFRC has to be turned on for this example because we are running this
     // timer off of the LFRC.
-    am_hal_clkgen_control( AM_HAL_CLKGEN_CONTROL_XTAL_START, 0);
+    am_hal_clkgen_control( AM_HAL_CLKGEN_CONTROL_XTAL_START, 0);      //設定要打開哪種震盪器
 		
     // Set up timer 3A so start by clearing it.
     am_hal_ctimer_clear(TIMERNUM, AM_HAL_CTIMER_TIMERA);
@@ -310,13 +311,14 @@ void timer_init(void)
     am_hal_ctimer_config(TIMERNUM, &g_sTimer3);
 
     // Compute CMPR value needed for desired period based on a 32HZ clock.
-		ui32Period = 8;
+		ui32Period = 8; //除頻
     am_hal_ctimer_period_set(TIMERNUM, AM_HAL_CTIMER_TIMERA,
                              ui32Period, (ui32Period >> 1));
-		am_hal_ctimer_output_config(TIMERNUM, AM_HAL_CTIMER_TIMERA, 12, AM_HAL_CTIMER_OUTPUT_NORMAL, AM_HAL_GPIO_PIN_DRIVESTRENGTH_12MA);
+		am_hal_ctimer_output_config(TIMERNUM, AM_HAL_CTIMER_TIMERA, 12, AM_HAL_CTIMER_OUTPUT_NORMAL, AM_HAL_GPIO_PIN_DRIVESTRENGTH_12MA); //設定clock pin
+
     // Set up timer 3A as the trigger source for the ADC.
     //am_hal_ctimer_adc_trigger_enable();	
-		 am_hal_ctimer_int_enable(AM_HAL_CTIMER_INT_TIMERA3C0);
+		 am_hal_ctimer_int_enable(AM_HAL_CTIMER_INT_TIMERA3C0);   // 設定timer的interrupt
 		 NVIC_EnableIRQ(CTIMER_IRQn);
 		 am_hal_interrupt_master_enable();
     // Start timer 3A.
@@ -342,14 +344,14 @@ int main(void)
     am_hal_cachectrl_config(&am_hal_cachectrl_defaults);
     am_hal_cachectrl_enable();
     //am_bsp_low_power_init();
-		//am_hal_clkgen_control(AM_HAL_CLKGEN_CONTROL_HFADJ_ENABLE, 0);
+		am_hal_clkgen_control(AM_HAL_CLKGEN_CONTROL_HFADJ_ENABLE, 0);
 		//am_hal_gpio_interrupt_register(48, GPIOHandle);
 	
 		//Initialize LED 
     am_devices_led_array_init(am_bsp_psLEDs, AM_BSP_NUM_LEDS);	//------------------
 		am_devices_led_array_out (am_bsp_psLEDs, AM_BSP_NUM_LEDS , value_led);//--------
 		//am_hal_gpio_pinconfig( 48 ,  gpio_clock_out);		//設置第48pin的clock為Lo2Hi interrupt
-		am_hal_gpio_pinconfig( 49 ,  gpio_data);
+		am_hal_gpio_pinconfig( 49 ,  gpio_data);    //pdm input
 		//am_devices_button_array_init(am_bsp_psButton0,AM_BSP_NUM_BUTTONS);
     //
     // Initialize the printf interface for ITM output
@@ -362,12 +364,12 @@ int main(void)
     //am_util_stdio_printf("PDM example.\n\n");
 
     // 設置快速GPIO		
-    /*am_hal_gpio_fastgpio_disable(FASTGPIO_PIN_B);
-    am_hal_gpio_fastgpio_clr(FASTGPIO_PIN_B);
-		am_hal_gpio_fastgpio_enable(FASTGPIO_PIN_B);
+    // am_hal_gpio_fastgpio_disable(FASTGPIO_PIN_B);
+    am_hal_gpio_fastgpio_clr(FASTGPIO_PIN_B);     //可以註解掉??
+		am_hal_gpio_fastgpio_enable(FASTGPIO_PIN_B);  //可以註解掉??
     AM_HAL_GPIO_MASKCREATE(sFastGpioMask);
     ui32Ret = am_hal_gpio_fast_pinconfig(AM_HAL_GPIO_MASKBIT(psFastGpioMask, 48),
-                                          gpio_clock_out, 0);*/
+                                          gpio_clock_out, 0);   //   if use gpio_isr then gpio_clock_in else if use ctimer_isr then gpio_clock_out
 																				 															
 		am_devices_led_on(am_bsp_psLEDs, 4);
     am_util_delay_ms(300);
@@ -390,36 +392,10 @@ int main(void)
     // Turn on the PDM, set it up for our chosen recording settings, and start
     // the first DMA transaction.
     //
-		timer_init();
-    am_devices_led_on(am_bsp_psLEDs, 1);
-    
+		timer_init();     //ctimer初始化
 
-    //超頻模式
-    /*
-    if ( am_hal_burst_mode_initialize(&eBurstModeAvailable) == AM_HAL_STATUS_SUCCESS )
-    {
-        if ( eBurstModeAvailable == AM_HAL_BURST_AVAIL )
-        {
-            am_util_stdio_printf("\nTurboSPOT mode is Available\n");
-						
-            //進入超頻模式
-            if ( am_hal_burst_mode_enable(&eBurstMode) == AM_HAL_STATUS_SUCCESS )
-            {
-                if ( eBurstMode == AM_HAL_BURST_MODE )
-                {
-                    am_util_stdio_printf("Operating in TurboSPOT mode (%dMHz)\n",
-                                         AM_HAL_CLKGEN_FREQ_MAX_MHZ * 2);
-                }
-            }
-            else
-                am_util_stdio_printf("Failed to Enable TurboSPOT mode operation\n");
-        }
-        else
-            am_util_stdio_printf("TurboSPOT mode is Not Available\n");
-    }
-    else
-        am_util_stdio_printf("Failed to Initialize for TurboSPOT mode operation\n");
-    */
+
+    // am_devices_led_on(am_bsp_psLEDs, 1);
 		
     //pdm_init();
     //am_util_stdio_printf("44444.\n\n");
