@@ -69,25 +69,25 @@
 // Example parameters.
 //
 //*****************************************************************************
-#define PDM_FFT_SIZE                AUDIO_FRAME_SIZE_MONO_BYTES/4
-#define PDM_FFT_BYTES               (PDM_FFT_SIZE * 2)
-#define PRINT_PDM_DATA              1
-#define PRINT_FFT_DATA              0 
-#define AUDIO_FRAME_MS 							1000
-#define g_ui32SampleFreq        ((16000)/(1000/AUDIO_FRAME_MS))
-#define AUDIO_FRAME_SIZE_MONO_BYTES     (g_ui32SampleFreq*2)
-#define AUDIO_FRAME_SIZE_STEREO_BYTES   (g_ui32SampleFreq*4)
+#define PDM_FFT_SIZE AUDIO_FRAME_SIZE_MONO_BYTES / 4
+#define PDM_FFT_BYTES (PDM_FFT_SIZE * 2)
+#define PRINT_PDM_DATA 1
+#define PRINT_FFT_DATA 0
+#define AUDIO_FRAME_MS 1000
+#define g_ui32SampleFreq ((16000 * AUDIO_FRAME_MS) / 1000)
+#define AUDIO_FRAME_SIZE_MONO_BYTES (g_ui32SampleFreq * 2)
+#define AUDIO_FRAME_SIZE_STEREO_BYTES (g_ui32SampleFreq * 4)
 
 //*****************************************************************************
 //
 // Global variables.
 //
 //*****************************************************************************
-volatile bool g_bPDMDataReady = false;
-uint32_t g_ui32PDMDataBuffer[AUDIO_FRAME_SIZE_MONO_BYTES/4];
-float g_fPDMTimeDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
-float g_fPDMFrequencyDomain[AUDIO_FRAME_SIZE_MONO_BYTES/2];
-float g_fPDMMagnitudes[AUDIO_FRAME_SIZE_MONO_BYTES/2];
+volatile bool g_bPDMDataReady = true;
+uint32_t g_ui32PDMDataBuffer[AUDIO_FRAME_SIZE_MONO_BYTES / 4];
+float g_fPDMTimeDomain[AUDIO_FRAME_SIZE_MONO_BYTES / 2];
+float g_fPDMFrequencyDomain[AUDIO_FRAME_SIZE_MONO_BYTES / 2];
+float g_fPDMMagnitudes[AUDIO_FRAME_SIZE_MONO_BYTES / 2];
 volatile float *Data = (volatile float *)0x10040000;
 int value_led = 0;
 //uint32_t g_ui32SampleFreq;
@@ -100,23 +100,23 @@ int value_led = 0;
 void *PDMHandle;
 
 am_hal_pdm_config_t g_sPdmConfig =
-{
-    .eClkDivider = AM_HAL_PDM_MCLKDIV_1,
-    .eLeftGain = AM_HAL_PDM_GAIN_P105DB,
-    .eRightGain = AM_HAL_PDM_GAIN_P105DB,
-    .ui32DecimationRate = 48,
-    .bHighPassEnable = 0,                           
-    .ui32HighPassCutoff = 0xB,
-    .ePDMClkSpeed = AM_HAL_PDM_CLK_1_5MHZ,
-    .bInvertI2SBCLK = 0,
-    .ePDMClkSource = AM_HAL_PDM_INTERNAL_CLK,
-    .bPDMSampleDelay = 0,
-    .bDataPacking = 1,
-    .ePCMChannels = AM_HAL_PDM_CHANNEL_RIGHT,
-    .ui32GainChangeDelay = 1,
-    .bI2SEnable = 0, 
-    .bSoftMute = 0,
-    .bLRSwap = 0,
+    {
+        .eClkDivider = AM_HAL_PDM_MCLKDIV_1,
+        .eLeftGain = AM_HAL_PDM_GAIN_P105DB,
+        .eRightGain = AM_HAL_PDM_GAIN_P105DB,
+        .ui32DecimationRate = 48,
+        .bHighPassEnable = 0,
+        .ui32HighPassCutoff = 0xB,
+        .ePDMClkSpeed = AM_HAL_PDM_CLK_1_5MHZ,
+        .bInvertI2SBCLK = 0,
+        .ePDMClkSource = AM_HAL_PDM_INTERNAL_CLK,
+        .bPDMSampleDelay = 0,
+        .bDataPacking = 1,
+        .ePCMChannels = AM_HAL_PDM_CHANNEL_RIGHT,
+        .ui32GainChangeDelay = 1,
+        .bI2SEnable = 0,
+        .bSoftMute = 0,
+        .bLRSwap = 0,
 };
 
 //*****************************************************************************
@@ -124,41 +124,37 @@ am_hal_pdm_config_t g_sPdmConfig =
 // PDM initialization.
 //
 //*****************************************************************************
-void
-pdm_init(void)
+void pdm_init(void)
 {
-    //
-    // Initialize, power-up, and configure the PDM.
-    //
-    am_hal_pdm_initialize(0, &PDMHandle);
-    am_hal_pdm_power_control(PDMHandle, AM_HAL_PDM_POWER_ON, false);
-    am_hal_pdm_configure(PDMHandle, &g_sPdmConfig);
-    am_hal_pdm_enable(PDMHandle);
+  //
+  // Initialize, power-up, and configure the PDM.
+  //
+  am_hal_pdm_initialize(0, &PDMHandle);
+  am_hal_pdm_power_control(PDMHandle, AM_HAL_PDM_POWER_ON, false);
+  am_hal_pdm_configure(PDMHandle, &g_sPdmConfig);
+  am_hal_pdm_enable(PDMHandle);
 
-    //
-    // Configure the necessary pins.
-    //
-    am_hal_gpio_pincfg_t sPinCfg = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  //
+  // Configure the necessary pins.
+  //
+  am_hal_gpio_pincfg_t sPinCfg = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-    sPinCfg.uFuncSel = AM_HAL_PIN_11_PDMDATA;
-    am_hal_gpio_pinconfig(11, sPinCfg);
+  sPinCfg.uFuncSel = AM_HAL_PIN_11_PDMDATA;
+  am_hal_gpio_pinconfig(11, sPinCfg);
 
-    sPinCfg.uFuncSel = AM_HAL_PIN_12_PDMCLK;
-    am_hal_gpio_pinconfig(12, sPinCfg);
+  sPinCfg.uFuncSel = AM_HAL_PIN_12_PDMCLK;
+  am_hal_gpio_pinconfig(12, sPinCfg);
 
-    am_hal_gpio_state_write(14, AM_HAL_GPIO_OUTPUT_CLEAR);
-    am_hal_gpio_pinconfig(14, g_AM_HAL_GPIO_OUTPUT);
+  am_hal_gpio_state_write(14, AM_HAL_GPIO_OUTPUT_CLEAR);
+  am_hal_gpio_pinconfig(14, g_AM_HAL_GPIO_OUTPUT);
 
-    //
-    // Configure and enable PDM interrupts (set up to trigger on DMA
-    // completion).
-    //
-    am_hal_pdm_interrupt_enable(PDMHandle, (AM_HAL_PDM_INT_DERR
-                                            | AM_HAL_PDM_INT_DCMP
-                                            | AM_HAL_PDM_INT_UNDFL
-                                            | AM_HAL_PDM_INT_OVF));
+  //
+  // Configure and enable PDM interrupts (set up to trigger on DMA
+  // completion).
+  //
+  am_hal_pdm_interrupt_enable(PDMHandle, (AM_HAL_PDM_INT_DERR | AM_HAL_PDM_INT_DCMP | AM_HAL_PDM_INT_UNDFL | AM_HAL_PDM_INT_OVF));
 
-    NVIC_EnableIRQ(PDM_IRQn);
+  NVIC_EnableIRQ(PDM_IRQn);
 }
 
 //*****************************************************************************
@@ -166,57 +162,78 @@ pdm_init(void)
 // Print PDM configuration data.
 //
 //*****************************************************************************
-void
-pdm_config_print(void)
+void pdm_config_print(void)
 {
-    uint32_t ui32PDMClk;
-    //uint32_t ui32MClkDiv;
-    float fFrequencyUnits;
+  uint32_t ui32PDMClk;
+  uint32_t ui32MClkDiv;
+  float fFrequencyUnits;
 
-    //
-    // Read the config structure to figure out what our internal clock is set
-    // to.
-    //
-  /*  switch (g_sPdmConfig.eClkDivider)
-    {
-        case AM_HAL_PDM_MCLKDIV_4: ui32MClkDiv = 4; break;
-        case AM_HAL_PDM_MCLKDIV_3: ui32MClkDiv = 3; break;
-        case AM_HAL_PDM_MCLKDIV_2: ui32MClkDiv = 2; break;
-        case AM_HAL_PDM_MCLKDIV_1: ui32MClkDiv = 1; break;
+  //
+  // Read the config structure to figure out what our internal clock is set
+  // to.
+  //
+  switch (g_sPdmConfig.eClkDivider)
+  {
+  case AM_HAL_PDM_MCLKDIV_4:
+    ui32MClkDiv = 4;
+    break;
+  case AM_HAL_PDM_MCLKDIV_3:
+    ui32MClkDiv = 3;
+    break;
+  case AM_HAL_PDM_MCLKDIV_2:
+    ui32MClkDiv = 2;
+    break;
+  case AM_HAL_PDM_MCLKDIV_1:
+    ui32MClkDiv = 1;
+    break;
 
-        default:
-            ui32MClkDiv = 0;
-    }*/
+  default:
+    ui32MClkDiv = 0;
+  }
 
-    switch (g_sPdmConfig.ePDMClkSpeed)
-    {
-        case AM_HAL_PDM_CLK_12MHZ:  ui32PDMClk = 12000000; break;
-        case AM_HAL_PDM_CLK_6MHZ:   ui32PDMClk =  6000000; break;
-        case AM_HAL_PDM_CLK_3MHZ:   ui32PDMClk =  3000000; break;
-        case AM_HAL_PDM_CLK_1_5MHZ: ui32PDMClk =  1500000; break;
-        case AM_HAL_PDM_CLK_750KHZ: ui32PDMClk =   750000; break;
-        case AM_HAL_PDM_CLK_375KHZ: ui32PDMClk =   375000; break;
-        case AM_HAL_PDM_CLK_187KHZ: ui32PDMClk =   187000; break;
+  switch (g_sPdmConfig.ePDMClkSpeed)
+  {
+  case AM_HAL_PDM_CLK_12MHZ:
+    ui32PDMClk = 12000000;
+    break;
+  case AM_HAL_PDM_CLK_6MHZ:
+    ui32PDMClk = 6000000;
+    break;
+  case AM_HAL_PDM_CLK_3MHZ:
+    ui32PDMClk = 3000000;
+    break;
+  case AM_HAL_PDM_CLK_1_5MHZ:
+    ui32PDMClk = 1500000;
+    break;
+  case AM_HAL_PDM_CLK_750KHZ:
+    ui32PDMClk = 750000;
+    break;
+  case AM_HAL_PDM_CLK_375KHZ:
+    ui32PDMClk = 375000;
+    break;
+  case AM_HAL_PDM_CLK_187KHZ:
+    ui32PDMClk = 187000;
+    break;
 
-        default:
-            ui32PDMClk = 0;
-    }
+  default:
+    ui32PDMClk = 0;
+  }
 
-    //
-    // Record the effective sample frequency. We'll need it later to print the
-    // loudest frequency from the sample.
-    //
-    //g_ui32SampleFreq = (ui32PDMClk /(ui32MClkDiv * 2 * g_sPdmConfig.ui32DecimationRate));
-		//g_ui32SampleFreq   = (uint32_t)((16000)/(1000/AUDIO_FRAME_MS));
+  //
+  // Record the effective sample frequency. We'll need it later to print the
+  // loudest frequency from the sample.
+  //
+  //g_ui32SampleFreq = (ui32PDMClk /(ui32MClkDiv * 2 * g_sPdmConfig.ui32DecimationRate));
+  //g_ui32SampleFreq   = (uint32_t)((16000)/(1000/AUDIO_FRAME_MS));
 
-    fFrequencyUnits = (float) g_ui32SampleFreq / (float) PDM_FFT_SIZE;
+  fFrequencyUnits = (float)g_ui32SampleFreq / (float)PDM_FFT_SIZE;
 
-    am_util_stdio_printf("Settings:\n");
-    am_util_stdio_printf("PDM Clock (Hz):         %12d\n", ui32PDMClk);
-    am_util_stdio_printf("Decimation Rate:        %12d\n", g_sPdmConfig.ui32DecimationRate);
-    am_util_stdio_printf("Effective Sample Freq.: %12d\n", g_ui32SampleFreq);
-    am_util_stdio_printf("FFT Length:             %12d\n\n", PDM_FFT_SIZE);
-    am_util_stdio_printf("FFT Resolution: %15.3f Hz\n", fFrequencyUnits);
+  am_util_stdio_printf("Settings:\n");
+  am_util_stdio_printf("PDM Clock (Hz):         %12d\n", ui32PDMClk);
+  am_util_stdio_printf("Decimation Rate:        %12d\n", g_sPdmConfig.ui32DecimationRate);
+  am_util_stdio_printf("Effective Sample Freq.: %12d\n", g_ui32SampleFreq);
+  am_util_stdio_printf("FFT Length:             %12d\n\n", PDM_FFT_SIZE);
+  am_util_stdio_printf("FFT Resolution: %15.3f Hz\n", fFrequencyUnits);
 }
 
 //*****************************************************************************
@@ -224,24 +241,23 @@ pdm_config_print(void)
 // Start a transaction to get some number of bytes from the PDM interface.
 //
 //*****************************************************************************
-void
-pdm_data_get(void)
+void pdm_data_get(void)
 {
-    //
-    // Configure DMA and target address.
-    //
-    am_hal_pdm_transfer_t sTransfer;
-    sTransfer.ui32TargetAddr = (uint32_t ) g_ui32PDMDataBuffer;
-		//am_util_stdio_printf("%d",g_ui32PDMDataBuffer);
-    sTransfer.ui32TotalCount = PDM_FFT_BYTES*2;
+  //
+  // Configure DMA and target address.
+  //
+  am_hal_pdm_transfer_t sTransfer;
+  sTransfer.ui32TargetAddr = (uint32_t)g_ui32PDMDataBuffer;
+  //am_util_stdio_printf("%d",g_ui32PDMDataBuffer);
+  sTransfer.ui32TotalCount = PDM_FFT_BYTES * 2;
 
-    //
-    // Start the data transfer.
-    //
-    am_hal_pdm_enable(PDMHandle);
-    am_util_delay_ms(100);
-    am_hal_pdm_fifo_flush(PDMHandle);
-    am_hal_pdm_dma_start(PDMHandle, &sTransfer);
+  //
+  // Start the data transfer.
+  //
+  am_hal_pdm_enable(PDMHandle);
+  am_util_delay_ms(100);
+  am_hal_pdm_fifo_flush(PDMHandle);
+  am_hal_pdm_dma_start(PDMHandle, &sTransfer);
 }
 
 //*****************************************************************************
@@ -249,30 +265,29 @@ pdm_data_get(void)
 // PDM interrupt handler.
 //
 //*****************************************************************************
-void
-am_pdm0_isr(void)
+void am_pdm0_isr(void)
 {
-    uint32_t ui32Status;
+  uint32_t ui32Status;
 
-    //
-    // Read the interrupt status.
-    //
-    am_hal_pdm_interrupt_status_get(PDMHandle, &ui32Status, true);
-    am_hal_pdm_interrupt_clear(PDMHandle, ui32Status);
+  //
+  // Read the interrupt status.
+  //
+  am_hal_pdm_interrupt_status_get(PDMHandle, &ui32Status, true);
+  am_hal_pdm_interrupt_clear(PDMHandle, ui32Status);
 
-    //
-    // Once our DMA transaction completes, we will disable the PDM and send a
-    // flag back down to the main routine. Disabling the PDM is only necessary
-    // because this example only implemented a single buffer for storing FFT
-    // data. More complex programs could use a system of multiple buffers to
-    // allow the CPU to run the FFT in one buffer while the DMA pulls PCM data
-    // into another buffer.
-    //
-    if (ui32Status & AM_HAL_PDM_INT_DCMP)
-    {
-        am_hal_pdm_disable(PDMHandle);
-        g_bPDMDataReady = true;
-    }
+  //
+  // Once our DMA transaction completes, we will disable the PDM and send a
+  // flag back down to the main routine. Disabling the PDM is only necessary
+  // because this example only implemented a single buffer for storing FFT
+  // data. More complex programs could use a system of multiple buffers to
+  // allow the CPU to run the FFT in one buffer while the DMA pulls PCM data
+  // into another buffer.
+  //
+  if (ui32Status & AM_HAL_PDM_INT_DCMP)
+  {
+    // am_hal_pdm_disable(PDMHandle);
+    // g_bPDMDataReady = true;
+  }
 }
 
 //*****************************************************************************
@@ -280,21 +295,20 @@ am_pdm0_isr(void)
 // Analyze and print frequency data.
 //
 //*****************************************************************************
-void
-pcm_fft_print(void)
+void pcm_fft_print(void)
 {
-   // float fMaxValue;
-   // uint32_t ui32MaxIndex;
-    uint16_t *pi16PDMData = (uint16_t *) g_ui32PDMDataBuffer;
-   // uint32_t ui32LoudestFrequency;
-	
-    //
-    // Convert the PDM samples to floats, and arrange them in the format
-    // required by the FFT function.
-    //
-    for (uint16_t i = 0; i < AUDIO_FRAME_SIZE_MONO_BYTES/4; i++)
-    {
-			/*
+  // float fMaxValue;
+  // uint32_t ui32MaxIndex;
+  uint16_t *pi16PDMData = (uint16_t *)g_ui32PDMDataBuffer;
+  // uint32_t ui32LoudestFrequency;
+
+  //
+  // Convert the PDM samples to floats, and arrange them in the format
+  // required by the FFT function.
+  //
+  for (uint16_t i = 0; i < AUDIO_FRAME_SIZE_MONO_BYTES / 4; i++)
+  {
+    /*
 				int hexValue[4];
 				int binValue[16];
 				int hexRound = 0;
@@ -334,28 +348,27 @@ pcm_fft_print(void)
 					//am_util_stdio_printf("%d,",binValue[roundCount2]);
 				}
 				*/
-				
 
-				//*(Data + i) = pi16PDMData[i];
+    //*(Data + i) = pi16PDMData[i];
 
-				//print_PDM_data,PCM_data
-        if (PRINT_PDM_DATA)
-        {		
-            //am_util_stdio_printf("%d ", pi16PDMData[i]);
-        }	
-       /* g_fPDMTimeDomain[2 * i] = pi16PDMData[i] / 1.0;
-        g_fPDMTimeDomain[2 * i + 1] = 0.0;*/
-    }
-		
+    //print_PDM_data,PCM_data
     if (PRINT_PDM_DATA)
     {
-        am_util_stdio_printf("END\n");
+      //am_util_stdio_printf("%d ", pi16PDMData[i]);
     }
+    /* g_fPDMTimeDomain[2 * i] = pi16PDMData[i] / 1.0;
+        g_fPDMTimeDomain[2 * i + 1] = 0.0;*/
+  }
 
-    //
-    // Perform the FFT.
-    //
-    /*arm_cfft_radix4_instance_f32 S;
+  if (PRINT_PDM_DATA)
+  {
+    am_util_stdio_printf("END\n");
+  }
+
+  //
+  // Perform the FFT.
+  //
+  /*arm_cfft_radix4_instance_f32 S;
     arm_cfft_radix4_init_f32(&S, PDM_FFT_SIZE, 0, 1);
     arm_cfft_radix4_f32(&S, g_fPDMTimeDomain);
     arm_cmplx_mag_f32(g_fPDMTimeDomain, g_fPDMMagnitudes, PDM_FFT_SIZE);
@@ -390,77 +403,75 @@ pcm_fft_print(void)
 // Main
 //
 //*****************************************************************************
-int
-main(void)
+int main(void)
 {
-/*		int opt, ret, dataCount;
+  /*		int opt, ret, dataCount;
 		int finished = 0;
 		unsigned int pdmSamplingF, decimationF, pcmSamplingF, pdmBufLen, pcmBufLen;
 		uint8_t* pdmBuf;
 		int16_t* pcmBuf;*/
-	
-    //
-    // Perform the standard initialzation for clocks, cache settings, and
-    // board-level low-power operation.
-    //
-    am_hal_clkgen_control(AM_HAL_CLKGEN_CONTROL_SYSCLK_MAX, 0);
-    am_hal_cachectrl_config(&am_hal_cachectrl_defaults);
-    am_hal_cachectrl_enable();
-    //am_bsp_low_power_init();
 
-    am_devices_led_array_init(am_bsp_psLEDs, AM_BSP_NUM_LEDS);	//------------------
-		am_devices_led_array_out (am_bsp_psLEDs, AM_BSP_NUM_LEDS , value_led);//--------
-    //
-    // Initialize the printf interface for ITM output
-    //
-    am_bsp_itm_printf_enable();
+  //
+  // Perform the standard initialzation for clocks, cache settings, and
+  // board-level low-power operation.
+  //
+  am_hal_clkgen_control(AM_HAL_CLKGEN_CONTROL_SYSCLK_MAX, 0);
+  am_hal_cachectrl_config(&am_hal_cachectrl_defaults);
+  am_hal_cachectrl_enable();
+  //am_bsp_low_power_init();
 
-    //
-    // Print the banner.
-    //
-    am_util_stdio_terminal_clear();
-    am_util_stdio_printf("PDM FFT example.\n\n");
+  am_devices_led_array_init(am_bsp_psLEDs, AM_BSP_NUM_LEDS);           //------------------
+  am_devices_led_array_out(am_bsp_psLEDs, AM_BSP_NUM_LEDS, value_led); //--------
+  //
+  // Initialize the printf interface for ITM output
+  //
+  am_bsp_itm_printf_enable();
 
-    //
-    // Turn on the PDM, set it up for our chosen recording settings, and start
-    // the first DMA transaction.
-    //
-		am_devices_led_on(am_bsp_psLEDs, 4);
-    am_util_delay_ms(300);
-    pdm_init();
-    pdm_config_print();
-    am_hal_pdm_fifo_flush(PDMHandle);
-		
+  //
+  // Print the banner.
+  //
+  am_util_stdio_terminal_clear();
+  am_util_stdio_printf("PDM FFT example.\n\n");
 
-    pdm_data_get();
+  //
+  // Turn on the PDM, set it up for our chosen recording settings, and start
+  // the first DMA transaction.
+  //
+  // am_devices_led_on(am_bsp_psLEDs, 4);
+  // am_util_delay_ms(300);
+  // pdm_init();
+  // pdm_config_print();
+  // am_hal_pdm_fifo_flush(PDMHandle);
 
-		am_devices_led_off(am_bsp_psLEDs, 4);
-    //
-    // Loop forever while sleeping.
-    //
-    while (1)
+  // pdm_data_get();
+
+  // am_devices_led_off(am_bsp_psLEDs, 4);
+  //
+  // Loop forever while sleeping.
+  //
+  while (1)
+  {
+    //am_hal_interrupt_master_disable();
+
+    if (g_bPDMDataReady)
     {
-        am_hal_interrupt_master_disable();
+      am_devices_led_off(am_bsp_psLEDs, 4);
+      g_bPDMDataReady = false;
 
-        if (g_bPDMDataReady)
-        {
-            g_bPDMDataReady = false;
+      am_devices_led_on(am_bsp_psLEDs, 4);
+      am_util_delay_ms(300);
+      pdm_init();
+      // pdm_config_print();
+      am_hal_pdm_fifo_flush(PDMHandle);
 
-            pcm_fft_print();
-
-            while (PRINT_PDM_DATA || PRINT_FFT_DATA);
-
-            //
-            // Start converting the next set of PCM samples.
-            //
-            //pdm_data_get();
-        }
-
-        //
-        // Go to Deep Sleep.
-        //
-        am_hal_sysctrl_sleep(AM_HAL_SYSCTRL_SLEEP_DEEP);
-
-        am_hal_interrupt_master_enable();
+      pdm_data_get();
     }
+
+    //
+    // Go to Deep Sleep.
+    //
+    //am_hal_sysctrl_sleep(AM_HAL_SYSCTRL_SLEEP_DEEP);
+
+    //am_hal_interrupt_master_enable();
+  }
 }

@@ -5,7 +5,7 @@
 <h2>Tool Versions:</h2>
 IDE-Version: £gVision V5.31.0.0
 Copyright (C) 2020 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: 123 ECL, CCU, LIC=9WSEV-P429W-VD3KA-1SXVN-93MTN-37MA0
+License Information: ZHENG DONG-SHENG, CCU, LIC=PE701-C0DLF-U4TS7-ETRBQ-XURXI-LH45S
  
 Tool Versions:
 Toolchain:       MDK-ARM Plus  Version: 5.31.0.0
@@ -21,8 +21,8 @@ Target DLL:      Segger\JL2CM3.dll V2.99.38.0
 Dialog DLL:      TCM.DLL V1.46.0.0
  
 <h2>Project:</h2>
-C:\Users\ECL\Desktop\keil\AmbiqSuite-R2.4.2\boards\apollo3_evb\examples\pdm_fft\keil\pdm_fft.uvprojx
-Project File Date:  09/19/2020
+C:\keil_Code\AmbiqSuite-R2.4.2\boards\apollo3_evb\examples\pdm_fft\keil\pdm_fft.uvprojx
+Project File Date:  12/13/2020
 
 <h2>Output:</h2>
   
@@ -32,19 +32,21 @@ Warning: *** SUPPORT EXPIRED, NEW PRODUCT SERIAL NUMBER REQUIRED ***
 Rebuild target 'pdm_fft'
 compiling startup_keil.s...
 compiling am_util_stdio.c...
-compiling am_util_delay.c...
 compiling am_util_faultisr.c...
+compiling am_util_delay.c...
 compiling am_devices_button.c...
 compiling am_devices_led.c...
 compiling pdm_fft.c...
-../src/pdm_fft.c(288): warning:  #177-D: variable "pi16PDMData"  was declared but never referenced
-      uint16_t *pi16PDMData = (uint16_t *) g_ui32PDMDataBuffer;
-../src/pdm_fft.c: 1 warning, 0 errors
+../src/pdm_fft.c(168): warning:  #550-D: variable "ui32MClkDiv"  was set but never used
+    uint32_t ui32MClkDiv;
+../src/pdm_fft.c(302): warning:  #177-D: variable "pi16PDMData"  was declared but never referenced
+    uint16_t *pi16PDMData = (uint16_t *)g_ui32PDMDataBuffer;
+../src/pdm_fft.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=8934 RO-data=1146 RW-data=152 ZI-data=38512  
+Program Size: Code=8186 RO-data=1146 RW-data=148 ZI-data=38516  
 After Build - User command #1: fromelf --bin --output bin\pdm_fft.bin bin\pdm_fft.axf
 After Build - User command #2: fromelf -cedrst --output bin\pdm_fft.txt bin\pdm_fft.axf
-".\bin\pdm_fft.axf" - 0 Error(s), 2 Warning(s).
+".\bin\pdm_fft.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -54,7 +56,7 @@ Package Vendor: AmbiqMicro
                 Ambiq Micro Apollo Series Device Support
 
 <h2>Collection of Component include folders:</h2>
-  C:\Users\ECL\AppData\Local\Arm\Packs\AmbiqMicro\Apollo_DFP\1.2.0\Device\Include
+  C:\Users\HiBiKi\AppData\Local\Arm\Packs\AmbiqMicro\Apollo_DFP\1.2.0\Device\Include
 
 <h2>Collection of Component Files used:</h2>
 Build Time Elapsed:  00:00:02
